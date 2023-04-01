@@ -1,7 +1,7 @@
 #!name = 小红书去广告
 #!desc = 过滤小红书广告，移除图片及视频水印。
 #!open= 
-#!author = chouchoui RuCu6
+#!author = RuCu6
 #!homepage = https://github.com/RuCu6/QuanX
 #!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/RedPaper.png
 
