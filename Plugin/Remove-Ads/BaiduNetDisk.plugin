@@ -21,7 +21,7 @@
 #^https:\/\/issuecdn\.baidupcs\.com\/issue\/netdisk\/ts_ad\/guanggao\/.+ reject
 https:\/\/issuecdn\.baidupcs\.com\/issue\/netdisk\/ts_ad\/ reject
 https:\/\/pan\.baidu\.com\/rest\/2.0\/pcs\/adv\? reject
-# https://pan\.baidu\.com\/act\/api\/activityentry\? - reject
+# https://pan\.baidu\.com\/act\/api\/activityentry\? reject
 https:\/\/pan\.baidu\.com\/component\/view\/(1510|1130)\?vip reject
 
 [MITM]
