@@ -1,9 +1,9 @@
-#!name = 菜鸟去广告
-#!desc = 过滤菜鸟广告（原菜鸟裹裹）
-#!openUrl = 
-#!author = ddgksf2013
-#!homepage = https://gitlab.com/lodepuly/vpn_tool/-/tree/main/Tool/Loon/Plugin
-#!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/Cainiao.png
+#!name=菜鸟去广告
+#!desc=过滤菜鸟广告（原菜鸟裹裹）
+#!openUrl= 
+#!author=ddgksf2013
+#!homepage=https://github.com/ddgksf2013/ddgksf2013
+#!icon=https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/Cainiao.png
 
 
 [Rewrite]
