@@ -8,7 +8,7 @@
 [Rule]
 DOMAIN, dns.weibo.cn, REJECT
 DOMAIN, adstrategy.biz.weibo.com, REJECT
-DOMAIN, boot.biz.weibo.com, REJECT
+#DOMAIN, boot.biz.weibo.com, REJECT
 DOMAIN, kadmimage.biz.weibo.com, REJECT
 DOMAIN, sdkaction.biz.weibo.com, REJECT
 DOMAIN, sdkclick.biz.weibo.com, REJECT
