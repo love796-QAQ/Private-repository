@@ -1,9 +1,9 @@
-#!name=Spotify Premium
-#!desc=部分解锁premium,建议重新登录,音质不能设置为超高
-#!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png
-#!openUrl=
-#!author=app2smile
-#!homepage=https://github.com/app2smile/rules
+#!name = Spotify Premium
+#!desc = 部分解锁premium,建议重新登录,音质不能设置为超高
+#!icon = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png
+#!openUrl =
+#!author = app2smile
+#!homepage = https://github.com/app2smile/rules
 # 1. 搜索界面 歌单/歌曲可以随意切换完全播放  2. 音乐库已点赞歌曲随意切换完全播放
 
 [Mitm]
