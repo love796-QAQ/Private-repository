@@ -2,7 +2,7 @@
 #!desc = 过滤高德地图广告
 #!open= 
 #!author = RuCu6 kokoryh ddgksf2013
-#!homepage = https://gitlab.com/lodepuly/vpn_tool/-/tree/main/Tool/Loon/Plugin
+#!homepage = https://github.com/RuCu6/QuanX
 #!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/Amap.png
 
 #[Rule]
