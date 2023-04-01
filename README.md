@@ -1,48 +1,48 @@
 # Private-Loon-Library
 
-Loon插件：
+##Loon插件：
 
   去广告：
   
-    菜鸟：
+    > 菜鸟：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/Cainiao.plugin
     
-    百度贴吧：
+    > 百度贴吧：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/tieba.plugin
     
-    YouTube：
+    > YouTube：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/YouTube.plugin
     
-    微博：
+    > 微博：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/Weibo.plugin
     
-    bilibili：
+    > bilibili：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/Bilibili.plugin
     
-    知乎：
+    > 知乎：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/Zhihu.plugin
     
-    网易云：
+    > 网易云：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/NeteaseCloudMusic.plugin
     
-    小红书：
+    > 小红书：
     
-    微信公众号：
+    > 微信公众号：
     
-    QQ音乐：
+    > QQ音乐：
     
-    百度网盘：
+    > 百度网盘：
     
-    高德地图：
+    > 高德地图：
     
-    云闪付：
+    > 云闪付：
     
-    开屏广告：
+    > 开屏广告：
     
   解锁：
   
-    百度网盘：
+    > 百度网盘：
     https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Crack/BaiduNetDisk.plugin
     
-    Spotify：
-    https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Crack/spotify.plugin
+    > Spotify：
+    |https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Crack/spotify.plugin|
