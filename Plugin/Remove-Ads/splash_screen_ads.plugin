@@ -1,8 +1,8 @@
 #!name = 开屏广告过滤器
 #!desc = 过滤部分主流应用的开屏广告[2022/12/31]
 #!openUrl = 
-#!author = ddgksf2013 可莉🅥
-#!homepage = https://gitlab.com/lodepuly/vpn_tool/-/tree/main/Tool/Loon/Plugin
+#!author = ddgksf2013
+#!homepage = https://github.com/ddgksf2013/ddgksf2013
 #!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/Other_icon/80px/Ads.png
 
 [Rewrite]
