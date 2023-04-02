@@ -1,12 +1,12 @@
-#!name = PicsArt美易 pro
-#!desc = 点击恢复购买即可解锁订阅
+#!name = Picsart Gold
+#!desc = 解锁Picsart Gold
 #!openUrl = 
 #!author = litieyin
 #!homepage = https://github.com/litieyin/AD_VIP
 #!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/Notability.png
 
 [Script]
-http-response ^https:\/\/api\.(picsart|meiease)\.c(n|om)\/users\/show\/me\.json script-path = https://raw.githubusercontent.com/litieyin/AD_VIP/main/Script/PicsArt.js, requires-body=true, tag=PicsArt美易 pro
+http-response ^https:\/\/api\.(picsart|meiease)\.c(n|om)\/users\/show\/me\.json script-path = https://raw.githubusercontent.com/litieyin/AD_VIP/main/Script/PicsArt.js, requires-body = true, tag = Picsart Gold
 
 [MITM]
-hostname = api.picsart.c*
+hostname = api.picsart.c*, api.meiease.c*
