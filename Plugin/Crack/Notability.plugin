@@ -6,7 +6,7 @@
 #!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/Notability.png
 
 [Script]
-http-response ^https:\/\/notability\.com\/subscriptions script-path = https://raw.githubusercontent.com/litieyin/AD_VIP/main/Script/notability.js, requires-body=true, tag=Notability解锁
+http-response ^https://notability.com/subscriptions script-path = https://raw.githubusercontent.com/litieyin/AD_VIP/main/Script/notability.js, requires-body=true, tag=Notability解锁
 
 [MITM]
 hostname = notability.com
