@@ -56,7 +56,7 @@ if (nName === null){
 	name = rewriteName;
     desc = name;
 	if (rewriteName==weibo){
-		name=微博去广告;}
+		name=123;}
 }else{
 	name = nName[0] != "" ? nName[0] : rewriteName;
 	desc = nName[1] != undefined ? nName[1] : name;
