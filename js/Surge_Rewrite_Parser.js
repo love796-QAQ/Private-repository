@@ -15,6 +15,8 @@ if (isStashiOS){
 }else{jsctype = "";};
 var name = "";
 var desc = "";
+var author = "";
+var homepage = "";
 var req
 var urlArg
 if (isLooniOS){
@@ -49,9 +51,17 @@ if (nName === null){
 	name = nName[0] != "" ? nName[0] : rewriteName;
 	desc = nName[1] != undefined ? nName[1] : name;
 };
+if (rewriteName == "YoutubeAds"){
+	name = "YouTube";
+	desc = "过滤YouTube广告";
+	author = "Maasea";
+	homepage = "https://github.com/Maasea/sgmodule";
+};
 if (isLooniOS){
 	name = "#!name=" + decodeURIComponent(name);
 	desc = "#!desc=" + decodeURIComponent(desc);
+	author = "#!author=" + decodeURIComponent(author);
+	homepage = "#!homepage=" + decodeURIComponent(homepage);
 }else if (isStashiOS){
 	name = "name: " + decodeURIComponent(name);
 	desc = "desc: " + decodeURIComponent(desc);
@@ -66,6 +76,8 @@ const stickerSum = 335;
 let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
    icon = "#!icon=" + "https://github.com/KeiKinn/StickerOnScreen/raw/main/Stickers/Sticker_" + randomStickerNum +".png";
 };
+let randomStickerNum = rewriteName;
+   icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum +".png";
 
 !(async () => {
   let body = await http(req);
@@ -585,6 +597,8 @@ others = (others[0] || '') && `${others.join("\n")}`;
 
 body = `${name}
 ${desc}
+${author}
+${homepage}
 ${icon}
 
 
