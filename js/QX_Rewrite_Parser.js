@@ -85,7 +85,8 @@ if (rewriteName == "weibo"){
 name = name + "去广告";
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
 	name = "#!name=" + decodeURIComponent(name);
-	desc = "#!desc=" + decodeURIComponent(desc);
+//	desc = "#!desc=" + decodeURIComponent(desc);
+	desc = "#!author=" + decodeURIComponent(desc);
 }else if (isStashiOS){
 	name = "name: " + decodeURIComponent(name);
 	desc = "desc: " + decodeURIComponent(desc);
