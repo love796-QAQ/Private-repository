@@ -55,6 +55,8 @@ var delNoteSc = urlArg.search(/\?del=|&del=/) != -1 ? true : false;
 if (nName === null){
 	name = rewriteName;
     desc = name;
+	if (name==weibo)
+		name=微博去广告;
 }else{
 	name = nName[0] != "" ? nName[0] : rewriteName;
 	desc = nName[1] != undefined ? nName[1] : name;
