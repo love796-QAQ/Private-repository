@@ -67,8 +67,8 @@ if (rewriteName == "weibo"){
 	author = "RuCu6";
 	homepage = "https://github.com/RuCu6/QuanX";
 }else if (rewriteName == "StartUp"){
-	name = "开屏广告过滤器";
-	desc = "过滤开屏广告";
+	name = "启动页";
+	desc = "过滤启动页广告";
 	author = "ddgksf2013";
 	homepage = "https://github.com/ddgksf2013/ddgksf2013";
 }else if (rewriteName == "coolapk"){
