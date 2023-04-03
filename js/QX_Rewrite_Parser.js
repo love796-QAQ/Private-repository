@@ -61,6 +61,8 @@ if (nName === null){
 };
 if (rewriteName == "weibo"){
 	name = "微博";
+	desc = "RuCu6
+#!homepage = https://github.com/RuCu6/QuanX";
 }else if (rewriteName == "StartUp"){
 	name = "开屏广告过滤器";
 }else if (rewriteName == "coolapk"){
