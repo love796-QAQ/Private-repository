@@ -59,7 +59,7 @@ if (nName === null){
 	name = nName[0] != "" ? nName[0] : rewriteName;
 	desc = nName[1] != undefined ? nName[1] : name;
 };
-if (name == weibo){
+if (rewriteName == weibo){
 	name = weiwei;
 };
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
