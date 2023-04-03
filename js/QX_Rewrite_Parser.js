@@ -25,6 +25,8 @@ if (isStashiOS){
 }else{jsctype = "";};
 var name = "";
 var desc = "";
+var author = "";
+var homepage = "";
 var req
 var urlArg
 if (isLooniOS || isSurgeiOS || isLanceX || isShadowrocket || isEgern){
@@ -61,31 +63,61 @@ if (nName === null){
 };
 if (rewriteName == "weibo"){
 	name = "微博";
-	desc = "RuCu6#!homepage = https://github.com/RuCu6/QuanX";
+	desc = "过滤微博广告";
+	author = "RuCu6";
+	homepage = "https://github.com/RuCu6/QuanX";
 }else if (rewriteName == "StartUp"){
 	name = "开屏广告过滤器";
+	desc = "过滤开屏广告";
+	author = "ddgksf2013";
+	homepage = "https://github.com/ddgksf2013/ddgksf2013";
 }else if (rewriteName == "coolapk"){
 	name = "酷安";
+	desc = "过滤酷安广告";
+	author = "ddgksf2013";
+	homepage = "https://github.com/ddgksf2013/ddgksf2013";
 }else if (rewriteName == "BdPanAdBlock"){
 	name = "百度网盘";
+	desc = "过滤百度网盘广告";
+	author = "ddgksf2013";
+	homepage = "https://github.com/ddgksf2013/ddgksf2013";
 }else if (rewriteName == "Cainiao"){
 	name = "菜鸟";
+	desc = "过滤菜鸟广告";
+	author = "ddgksf2013";
+	homepage = "https://github.com/ddgksf2013/ddgksf2013";
 }else if (rewriteName == "amap"){
 	name = "高德地图";
+	desc = "过滤高德地图广告";
+	author = "RuCu6";
+	homepage = "https://github.com/RuCu6/QuanX";
 }else if (rewriteName == "xiaohongshu"){
 	name = "小红书";
+	desc = "过滤小红书广告";
+	author = "RuCu6";
+	homepage = "https://github.com/RuCu6/QuanX";
 }else if (rewriteName == "cloudmusic"){
 	name = "网易云音乐";
+	desc = "过滤网易云音乐广告";
+	author = "RuCu6";
+	homepage = "https://github.com/RuCu6/QuanX";
 }else if (rewriteName == "zhihu"){
 	name = "知乎";
+	desc = "过滤知乎广告";
+	author = "RuCu6";
+	homepage = "https://github.com/RuCu6/QuanX";
 }else if (rewriteName == "bilibili"){
 	name = "bilibili";
+	desc = "过滤bilibili广告";
+	author = "RuCu6";
+	homepage = "https://github.com/RuCu6/QuanX";
 };
 name = name + "去广告";
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
 	name = "#!name=" + decodeURIComponent(name);
-//	desc = "#!desc=" + decodeURIComponent(desc);
-	desc = "#!author=" + decodeURIComponent(desc);
+	desc = "#!desc=" + decodeURIComponent(desc);
+	author = "#!author=" + decodeURIComponent(author);
+	homepage = "#!homepage=" + decodeURIComponent(homepage);
 }else if (isStashiOS){
 	name = "name: " + decodeURIComponent(name);
 	desc = "desc: " + decodeURIComponent(desc);
@@ -481,6 +513,8 @@ if (isLooniOS){
 	
 body = `${name}
 ${desc}
+${author}
+${homepage}
 ${icon}
 
 
