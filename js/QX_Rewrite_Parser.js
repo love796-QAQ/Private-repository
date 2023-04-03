@@ -60,8 +60,9 @@ if (nName === null){
 	desc = nName[1] != undefined ? nName[1] : name;
 };
 if (rewriteName == "weibo"){
-	name = "weiwei";
+	name = "微博";
 };
+name = name + "去广告";
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
 	name = "#!name=" + decodeURIComponent(name);
 	desc = "#!desc=" + decodeURIComponent(desc);
