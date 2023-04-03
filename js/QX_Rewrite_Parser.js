@@ -77,11 +77,11 @@ if (iconStatus === false){
 }else{
 	const stickerStartNum = 1000;
 const stickerSum = 335;
-//let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
-let randomStickerNum = rewriteName;
-//   icon = "#!icon=" + "https://github.com/KeiKinn/StickerOnScreen/raw/main/Stickers/Sticker_" + randomStickerNum +".png";
-   icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum +".png";
+let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
+   icon = "#!icon=" + "https://github.com/KeiKinn/StickerOnScreen/raw/main/Stickers/Sticker_" + randomStickerNum +".png";
 };
+let randomStickerNum = rewriteName;
+   icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum +".png";
 !(async () => {
   let body = await http(req);
 //判断是否断网
