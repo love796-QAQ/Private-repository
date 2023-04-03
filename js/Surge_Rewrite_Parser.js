@@ -57,6 +57,7 @@ if (rewriteName == "YoutubeAds"){
 	author = "Maasea";
 	homepage = "https://github.com/Maasea/sgmodule";
 };
+name = name + "去广告";
 if (isLooniOS){
 	name = "#!name=" + decodeURIComponent(name);
 	desc = "#!desc=" + decodeURIComponent(desc);
