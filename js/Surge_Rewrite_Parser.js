@@ -56,6 +56,11 @@ if (rewriteName == "YoutubeAds"){
 	desc = "过滤YouTube广告";
 	author = "Maasea";
 	homepage = "https://github.com/Maasea/sgmodule";
+}else if (rewriteName == "tieba"){
+	name = "百度贴吧";
+	desc = "过滤百度贴吧广告";
+	author = "app2smile";
+	homepage = "https://github.com/app2smile/rules";
 };
 name = name + "去广告";
 if (isLooniOS){
