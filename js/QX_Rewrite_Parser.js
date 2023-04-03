@@ -62,7 +62,7 @@ if (nName === null){
 if (rewriteName == "weibo"){
 	name = "微博";
 };
-name = decodeURIComponent(name) + "去广告";
+name = name + "去广告";
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
 	name = "#!name=" + decodeURIComponent(name);
 	desc = "#!desc=" + decodeURIComponent(desc);
@@ -77,8 +77,10 @@ if (iconStatus === false){
 }else{
 	const stickerStartNum = 1000;
 const stickerSum = 335;
-let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
-   icon = "#!icon=" + "https://github.com/KeiKinn/StickerOnScreen/raw/main/Stickers/Sticker_" + randomStickerNum +".png";
+//let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
+let randomStickerNum = rewriteName;
+//   icon = "#!icon=" + "https://github.com/KeiKinn/StickerOnScreen/raw/main/Stickers/Sticker_" + randomStickerNum +".png";
+   icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum +".png";
 };
 !(async () => {
   let body = await http(req);
