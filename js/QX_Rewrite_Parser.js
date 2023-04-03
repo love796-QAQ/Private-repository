@@ -62,7 +62,7 @@ if (nName === null){
 if (rewriteName == "weibo"){
 	name = "微博";
 };
-name = name"去广告";
+name = name + "去广告";
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
 	name = "#!name=" + decodeURIComponent(name);
 	desc = "#!desc=" + decodeURIComponent(desc);
