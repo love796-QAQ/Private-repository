@@ -5,13 +5,10 @@
 #!openurl=https://github.com/chengkongyiban/stash/tree/main/Rewrite_Parser_Wiki
 #!icon=https://github.com/chengkongyiban/shadowrocket/raw/main/584047B7-4D53-4429-9065-4D822D99E992.jpeg
 
-
 [Script]
 http-request \/[^/]+\.[^/]+qx$|qx\?(jsc|hnadd|hndel|n|y|x|del|i)= script-path=https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/js/QX_Rewrite_Parser.js, requires-body=true, timeout=10, tag=QX转化Loon
 
 http-request \/[^/]+\.[^/]+sg$|sg\?(jsc|hnadd|hndel|n|y|x|del|i)= script-path=https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/js/Surge_Rewrite_Parser.js, requires-body=true, timeout=10, tag=Surge转化Loon
-
-http-request \/[^/]+\.[^/]+sg$|ln\?(jsc|hnadd|hndel|n|y|x|del|i)= script-path=https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/js/Loon_Rewrite_Parser.js, requires-body=true, timeout=10, tag=Loon转化Loon
 
 http-request r_parser.list$|r_parser.list\?.* script-path=https://raw.githubusercontent.com/chengkongyiban/stash/main/js/rule_parser.js, requires-body=true, tag=规则集转换
 
