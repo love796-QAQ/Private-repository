@@ -58,8 +58,9 @@ if (nName === null){
 }else{
 	name = nName[0] != "" ? nName[0] : rewriteName;
 	desc = nName[1] != undefined ? nName[1] : name;
-	if (name == weibo)
-		name = 123;
+};
+if (name == weibo){
+	name = weiwei;
 };
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
 	name = "#!name=" + decodeURIComponent(name);
