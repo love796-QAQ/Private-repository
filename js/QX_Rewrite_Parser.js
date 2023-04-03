@@ -61,6 +61,24 @@ if (nName === null){
 };
 if (rewriteName == "weibo"){
 	name = "微博";
+}else if (rewriteName == "StartUp"){
+	name = "开屏广告过滤器";
+}else if (rewriteName == "coolapk"){
+	name = "酷安";
+}else if (rewriteName == "BdPanAdBlock"){
+	name = "百度网盘";
+}else if (rewriteName == "Cainiao"){
+	name = "菜鸟";
+}else if (rewriteName == "amap"){
+	name = "高德地图";
+}else if (rewriteName == "xiaohongshu"){
+	name = "小红书";
+}else if (rewriteName == "cloudmusic"){
+	name = "网易云音乐";
+}else if (rewriteName == "zhihu"){
+	name = "知乎";
+}else if (rewriteName == "bilibili"){
+	name = "bilibili";
 };
 name = name + "去广告";
 if (isShadowrocket || isLooniOS ||isSurgeiOS || isLanceX || isEgern){
