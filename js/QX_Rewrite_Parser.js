@@ -52,11 +52,12 @@ var iconStatus = urlArg.search(/\?i=|&i=/) != -1 ? false : true;
 var icon = "";
 var delNoteSc = urlArg.search(/\?del=|&del=/) != -1 ? true : false;
 //修改名字和简介
-if (nName === null){
-	name = rewriteName;
-    desc = name;
+//if (nName === null){
+//	name = rewriteName;
+//    desc = name;
 	if (rewriteName==weibo){
-		name=123;}
+		name=123;
+                desc = name;
 }else{
 	name = nName[0] != "" ? nName[0] : rewriteName;
 	desc = nName[1] != undefined ? nName[1] : name;
