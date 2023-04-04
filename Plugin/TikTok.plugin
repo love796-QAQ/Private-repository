@@ -2,7 +2,7 @@
 #!desc = 解锁TikTok，正常点赞、收藏。
 #!openUrl = 
 #!author = love796-QAQ
-#!homepage = https://gitlab.com/lodepuly/vpn_tool/-/tree/main/Tool/Loon/Plugin
+#!homepage = https://github.com/love796-QAQ/Private-Loon-Library
 #!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/TikTok.png
 
 [Rewrite]
