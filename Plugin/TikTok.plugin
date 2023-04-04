@@ -3,7 +3,7 @@
 #!openUrl = 
 #!author = love796-QAQ
 #!homepage = https://github.com/love796-QAQ/Private-Loon-Library
-#!icon = https://gitlab.com/lodepuly/iconlibrary/-/raw/master/App_icon/80px/TikTok.png
+#!icon = https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/TikTok.png
 
 [Rewrite]
 (?<=\d\/\?\w{7}_\w{4}=)1[6-9]..(?=.?.?&) 307 18.4
