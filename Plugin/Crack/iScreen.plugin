@@ -1,12 +1,12 @@
-#!name = Picsart Gold
-#!desc = 解锁Picsart Gold
+#!name = iScreen VIP
+#!desc = 解锁iScreen VIP
 #!openUrl = 
-#!author = NobyDa
+#!author = 89996462
 #!homepage = https://github.com/NobyDa/Script
 #!icon = https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/Picsart.png
 
 [Script]
-http-response ^https:\/\/api\.(picsart|meiease)\.c(n|om)\/users\/show\/me\.json script-path = https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/PicsArt.js, requires-body = true, tag = Picsart Gold
+http-response ^https:\/\/cs\.kuso\.xyz\/ script-path = https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/iScreen.js, requires-body = true, tag = iScreen VIP
 
 [MITM]
-hostname = api.picsart.c*, api.meiease.c*
+hostname = cs.kuso.xyz
