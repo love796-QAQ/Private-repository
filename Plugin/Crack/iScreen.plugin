@@ -3,7 +3,7 @@
 #!openUrl = 
 #!author = 89996462
 #!homepage = https://github.com/89996462/Quantumult-X
-#!icon = https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/Picsart.png
+#!icon = https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/iScreen.png
 
 [Script]
 http-response ^https:\/\/cs\.kuso\.xyz\/ script-path = https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/iScreen.js, requires-body = true, tag = iScreen VIP
