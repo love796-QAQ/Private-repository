@@ -273,7 +273,7 @@ if (isLooniOS || isSurgeiOS || isLanceX || isShadowrocket || isEgern){
 				
 				proto = js.match(/proto\.js/i) ? ', binary-body-mode=true' : '';
 				
-				proto = js.match(/proto\.js/i) ? ', binary-body-mode=true' : '';
+				proto = js.match(/universe\.js/i) ? ', binary-body-mode=true' : '';
 				}else if (isStashiOS){
 					
 				rebody = x.match(/\x20script[^\s]*(-body|-analyze)/) ? 'require-body: true' : '';
