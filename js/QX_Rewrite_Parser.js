@@ -272,6 +272,8 @@ if (isLooniOS || isSurgeiOS || isLanceX || isShadowrocket || isEgern){
 				size = x.match(/\x20script[^\s]*(-body|-analyze)/) ? ', max-size=3145728' : '';
 				
 				proto = js.match(/proto\.js/i) ? ', binary-body-mode=true' : '';
+				
+				proto = js.match(/proto\.js/i) ? ', binary-body-mode=true' : '';
 				}else if (isStashiOS){
 					
 				rebody = x.match(/\x20script[^\s]*(-body|-analyze)/) ? 'require-body: true' : '';
