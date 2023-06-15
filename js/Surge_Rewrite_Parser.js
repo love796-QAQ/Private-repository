@@ -7,6 +7,9 @@
 ***************************/
 const isStashiOS = 'undefined' !== typeof $environment && $environment['stash-version'];
 const isLooniOS = 'undefined' != typeof $loon;
+const iconStatus = $persistentStore.read("启用插件随机图标");
+const iconLibrary = $persistentStore.read("插件随机图标合集") ?? "Doraemon";
+
 var jsctype
 if (isStashiOS) {
 	jsctype = "stash";
@@ -40,7 +43,6 @@ var Pout0 = urlArg.search(/\?x=|&x=/) != -1 ? (urlArg.split(/\?x=|&x=/)[1].split
 var hnAdd = urlArg.search(/\?hnadd=|&hnadd=/) != -1 ? (urlArg.split(/\?hnadd=|&hnadd=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
 var hnDel = urlArg.search(/\?hndel=|&hndel=/) != -1 ? (urlArg.split(/\?hndel=|&hndel=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
 var jsConverter = urlArg.search(/\?jsc=|&jsc=/) != -1 ? (urlArg.split(/\?jsc=|&jsc=/)[1].split("&")[0].split("+")) : null;
-var iconStatus = urlArg.indexOf("i=") != -1 ? false : true;
 var icon = "";
 var delNoteSc = urlArg.indexOf("del=") != -1 ? true : false;
 //修改名字和简介
@@ -73,14 +75,14 @@ if (isLooniOS) {
 	desc = "desc: " + decodeURIComponent(desc);
 };
 
-//随机图标开关，不传入参数默认为开
-if (iconStatus === false) {
-	icon = "#!icon=";
+//随机图标在插件中设置，默认启用
+if (iconStatus == "禁用") {
+	icon = "";
 } else {
 	const stickerStartNum = 1000;
-	const stickerSum = 335;
+	const stickerSum = 100;
 	let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
-	icon = "#!icon=" + "https://github.com/KeiKinn/StickerOnScreen/raw/main/Stickers/Sticker_" + randomStickerNum + ".png";
+	icon = "#!icon=" + "https://github.com/Toperlock/Quantumult/raw/main/icon/" + iconLibrary + "/" + iconLibrary + "-" + randomStickerNum + ".png";
 };
 let randomStickerNum = rewriteName;
 icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum + ".png";
@@ -100,7 +102,7 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 		}//识别客户端通知
 	} else {//以下开始重写及脚本转换
 
-		original = body.replace(/^ *(#|;|\/\/)/g, '#').replace(/ _ reject/g, ' - reject').replace(/(^[^#].+)\x20+\/\/.+/g, "$1").split("\n");
+		original = body.replace(/^ *(#|;|\/\/)/g, '#').replace(/ _ reject/g, ' - reject').replace(/(^[^#].+)\x20+\/\/.+/g, "$1").split(/(\r\n)/);
 
 		if (body.match(/\/\*+\n[\s\S]*\n\*+\/\n/)) {
 			body = body.replace(/[\s\S]*(\/\*+\n[\s\S]*\n\*+\/\n)[\s\S]*/, "$1").match(/[^\r\n]+/g);
@@ -360,7 +362,7 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 							};
 
 						} else {
-							let lineNum = original.indexOf(x) + 1;
+							let lineNum = (original.indexOf(x) + 2) / 2;
 							others.push(lineNum + "行" + x)
 						};//整个http-re结束
 
@@ -588,7 +590,7 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 
 									rules.push(x.replace(/\x20/g, "").replace(/.*DOMAIN-SET.+/, "").replace(/,REJECT.+/, ",REJECT").replace(/DEST-PORT/, "DST-PORT").replace(/^#?(.+)/, `${noteK2}- $1`))
 								} else {
-									let lineNum = original.indexOf(x) + 1;
+									let lineNum = (original.indexOf(x) + 2) / 2;
 									others.push(lineNum + "行" + x)
 								};
 							}//Stash rules处理完毕
