@@ -12,9 +12,9 @@
 
 | 应用 | 链接 |
 | :-----| :-----|
-| [启动页](https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin |
-| [酷安](https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin |
-| [百度网盘](https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin |
+| [启动页](https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/StartUp.confqx) | https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/StartUp.conf |
+| [酷安](https://raw.githubusercontent.com/ddgksf2013/Scripts/master/coolapk.jsqx) | https://raw.githubusercontent.com/ddgksf2013/Scripts/master/coolapk.js |
+| [百度网盘](https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/BaiduNetDisk.plugin) | https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Remove-Ads/BaiduNetDisk.plugin |
 | [微博](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/weibo.snippetqx) | https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/weibo.snippet |
 | [菜鸟](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/cainiao.snippetqx) | https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/cainiao.snippet |
 | [高德地图](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/amap.snippetqx) | https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/amap.snippet |
