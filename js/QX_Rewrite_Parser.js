@@ -5,7 +5,7 @@
 感谢@xream 提供的replace-Header.js
 			   echo-response.js
 感谢@mieqq 提供的replace-body.js
-插件图标用的 @Keikinn 的 StickerOnScreen项目，感谢
+插件图标用的 @Keikinn 的 StickerOnScreen项目 以及 @Toperlock 的图标库项目，感谢，感谢
 ***************************/
 const isStashiOS = 'undefined' !== typeof $environment && $environment['stash-version'];
 const isSurgeiOS = 'undefined' !== typeof $environment && $environment['surge-version'];
@@ -13,8 +13,10 @@ const isShadowrocket = 'undefined' !== typeof $rocket;
 const isLooniOS = 'undefined' != typeof $loon;
 const isLanceX = 'undefined' != typeof $native;
 const isEgern = 'object' == typeof egern;
-const iconStatus = $persistentStore.read("启用插件随机图标");
-const iconLibrary = $persistentStore.read("插件随机图标合集") ?? "Doraemon";
+const iconStatus = $persistentStore.read("启用插件随机图标") ?? "启用";
+const iconReplace = $persistentStore.read("替换原始插件图标");
+const iconLibrary1 = $persistentStore.read("插件随机图标合集") ?? "Doraemon(100P)";
+const iconLibrary2 = iconLibrary1.split("(")[0];
 var jsctype
 if (isStashiOS) {
 	jsctype = "stash";
@@ -123,18 +125,20 @@ if (isShadowrocket || isLooniOS || isSurgeiOS || isLanceX || isEgern) {
 	name = "name: " + decodeURIComponent(name);
 	desc = "desc: " + decodeURIComponent(desc);
 };
+let npluginDesc = name + "\n" + desc;
 
 //随机图标开关，不传入参数默认为开
-if (iconStatus == "禁用") {
-	icon = "";
-} else {
-	const stickerStartNum = 1000;
-	const stickerSum = 100;
+if (isLooniOS && iconStatus == "启用") {
+	const stickerStartNum = 1001;
+	const stickerSum = iconLibrary1.split("(")[1].split("P")[0];
 	let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
-	icon = "#!icon=" + "https://github.com/Toperlock/Quantumult/raw/main/icon/" + iconLibrary + "/" + iconLibrary + "-" + randomStickerNum + ".png";
+	icon = "#!icon=" + "https://github.com/Toperlock/Quantumult/raw/main/icon/" + iconLibrary2 + "/" + iconLibrary2 + "-" + randomStickerNum + ".png";
 };
+const pluginIcon = icon;
+console.log(pluginIcon);
 let randomStickerNum = rewriteName;
 icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum + ".png";
+
 !(async () => {
 	let body = await http(req);
 	//判断是否断网
@@ -158,6 +162,7 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 			body = body.match(/[^\r\n]+/g);
 		};
 
+		let pluginDesc = [];
 		let httpFrame = "";
 		let URLRewrite = [];
 		let script = [];
@@ -225,7 +230,7 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 			};//剔除已注释重写结束
 
 			let type = x.match(
-				/\x20url\x20script-|\x20url\x20reject$|\x20url\x20reject-|\x20echo-response\x20|\-header\x20|^hostname| url 30|\x20(request|response)-body|[^\s]+ [^u\s]+ [^\s]+ [^\s]+ [^\s]+ ([^\s] )?(https?|ftp|file)/
+				/^#!|\x20url\x20script-|\x20url\x20reject$|\x20url\x20reject-|\x20echo-response\x20|\-header\x20|^hostname| url 30|\x20(request|response)-body|[^\s]+ [^u\s]+ [^\s]+ [^\s]+ [^\s]+ ([^\s] )?(https?|ftp|file)/
 			)?.[0];
 			//判断注释
 			if (isLooniOS || isSurgeiOS || isLanceX || isShadowrocket || isEgern) {
@@ -253,6 +258,19 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 
 			if (type) {
 				switch (type) {
+					//简介            
+					case "#!":
+						if (isStashiOS) {
+							pluginDesc.push(x = x.replace(/#! *(name|desc) *= *(.+)/, '$1: "$2"'));
+
+						} else if (isLooniOS && iconReplace == "启用") {
+							pluginDesc.push(x.replace(
+								/^#! *icon *= *.*/, pluginIcon));
+						} else {
+							pluginDesc.push(x);
+						};
+						break;
+
 					case " url script-":
 						//脚本			
 						let rebody
@@ -516,17 +534,30 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 		}); //循环结束
 
 		if (isLooniOS) {
+			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
+
+			if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
+
+				if (pluginDesc.search(/#! *icon *= *.+/) == -1) {
+					pluginDesc = pluginDesc + "\n" + pluginIcon;
+
+				} else { pluginDesc = pluginDesc; };
+
+			} else {
+				pluginDesc = npluginDesc + "\n" + pluginIcon;
+			};
+
+			if (iconReplace == "启用" && pluginDesc.search(/#!icon=/) == -1) {
+				pluginDesc = pluginDesc.replace(/(.)$/, "$1\n" + pluginIcon)
+			};
+
 			script = (script[0] || '') && `[Script]\n\n${script.join("\n\n")}`;
 
 			URLRewrite = (URLRewrite[0] || '') && `[Rewrite]\n\n${URLRewrite.join("\n")}`;
 
 			others = (others[0] || '') && `${others.join("\n\n")}`;
 
-			body = `${name}
-${desc}
-${author}
-${homepage}
-${icon}
+			body = `${pluginDesc}
 
 
 ${URLRewrite}
@@ -539,6 +570,15 @@ ${MITM}`
 				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
 				.replace(/\n{2,}/g, '\n\n')
 		} else if (isSurgeiOS || isLanceX || isEgern) {
+
+			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
+
+			if (pluginDesc != "" && pluginDesc.search(/^#! *name *=/) != -1) {
+				pluginDesc = pluginDesc;
+			} else {
+				pluginDesc = npluginDesc;
+			};
+
 			script = (script[0] || '') && `[Script]\n\n${script.join("\n\n")}`;
 
 			URLRewrite = (URLRewrite[0] || '') && `[URL Rewrite]\n\n${URLRewrite.join("\n")}`;
@@ -547,8 +587,7 @@ ${MITM}`
 
 			others = (others[0] || '') && `${others.join("\n\n")}`;
 
-			body = `${name}
-${desc}
+			body = `${pluginDesc}
 
 
 ${URLRewrite}
@@ -564,14 +603,22 @@ ${MITM}`
 				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
 				.replace(/\n{2,}/g, '\n\n')
 		} else if (isShadowrocket) {
+
+			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
+
+			if (pluginDesc != "" && pluginDesc.search(/^#! *name *=/) != -1) {
+				pluginDesc = pluginDesc;
+			} else {
+				pluginDesc = npluginDesc;
+			};
+
 			script = (script[0] || '') && `[Script]\n\n${script.join("\n\n")}`;
 
 			URLRewrite = (URLRewrite[0] || '') && `[URL Rewrite]\n\n${URLRewrite.join("\n")}`;
 
 			others = (others[0] || '') && `${others.join("\n\n")}`;
 
-			body = `${name}
-${desc}
+			body = `${pluginDesc}
 
 
 ${URLRewrite}
@@ -584,6 +631,14 @@ ${MITM}`
 				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
 				.replace(/\n{2,}/g, '\n\n')
 		} else if (isStashiOS) {
+
+			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
+
+			if (pluginDesc != "" && pluginDesc.search(/name: /) != -1) {
+				pluginDesc = pluginDesc;
+			} else {
+				pluginDesc = npluginDesc;
+			};
 
 			URLRewrite = (URLRewrite[0] || '') && `  rewrite:\n${URLRewrite.join("\n")}`;
 
@@ -609,8 +664,8 @@ ${MITM}`
 
 			others = (others[0] || '') && `${others.join("\n\n")}`;
 
-			body = `${name}
-${desc}
+			body = `${pluginDesc}
+
 
 ${httpFrame}
 
