@@ -14,7 +14,7 @@ const isLooniOS = 'undefined' != typeof $loon;
 const isLanceX = 'undefined' != typeof $native;
 const isEgern = 'object' == typeof egern;
 const iconStatus = $persistentStore.read("启用插件随机图标") ?? "启用";
-const iconReplace = $persistentStore.read("替换原始插件图标");
+const iconReplace = $persistentStore.read("替换原始插件图标") ?? "启用";
 const iconLibrary1 = $persistentStore.read("插件随机图标合集") ?? "Doraemon(100P)";
 const iconLibrary2 = iconLibrary1.split("(")[0];
 var jsctype
