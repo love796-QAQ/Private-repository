@@ -84,7 +84,7 @@ if (rewriteName == "weibo") {
 	desc = "过滤百度网盘广告";
 	author = "ddgksf2013";
 	homepage = "https://github.com/ddgksf2013/ddgksf2013";
-} else if (rewriteName == "Cainiao") {
+} else if (rewriteName == "cainiao") {
 	name = "菜鸟";
 	desc = "过滤菜鸟广告";
 	author = "ddgksf2013";
