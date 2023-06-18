@@ -67,6 +67,12 @@ if (rewriteName == "YoutubeAds") {
 	homepage = "https://github.com/app2smile/rules";
 };
 name = name + "去广告";
+if (rewriteName == "spotify") {
+	name = "Spotify Premium";
+	desc = "部分解锁premium,建议重新登录,并清除缓存,音质不能设置为超高";
+	author = "app2smile";
+	homepage = "https://github.com/app2smile/rules";
+};
 if (isLooniOS) {
 	name = "#!name=" + decodeURIComponent(name);
 	desc = "#!desc=" + decodeURIComponent(desc);
