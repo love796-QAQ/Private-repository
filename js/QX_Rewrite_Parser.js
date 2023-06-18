@@ -125,7 +125,7 @@ if (isShadowrocket || isLooniOS || isSurgeiOS || isLanceX || isEgern) {
 	name = "name: " + decodeURIComponent(name);
 	desc = "desc: " + decodeURIComponent(desc);
 };
-let npluginDesc = name + "\n" + desc;
+let npluginDesc = name + "\n" + desc + "\n" + author + "\n" + homepage;
 
 //随机图标开关，不传入参数默认为开
 if (isLooniOS && iconStatus == "启用") {
