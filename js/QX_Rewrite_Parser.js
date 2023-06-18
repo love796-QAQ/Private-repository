@@ -134,10 +134,10 @@ if (isLooniOS && iconStatus == "启用") {
 	let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
 	icon = "#!icon=" + "https://github.com/Toperlock/Quantumult/raw/main/icon/" + iconLibrary2 + "/" + iconLibrary2 + "-" + randomStickerNum + ".png";
 };
-const pluginIcon = icon;
-console.log(pluginIcon);
 let randomStickerNum = rewriteName;
 icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum + ".png";
+const pluginIcon = icon;
+console.log(pluginIcon);
 
 !(async () => {
 	let body = await http(req);
@@ -263,7 +263,7 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 						if (isStashiOS) {
 							pluginDesc.push(x = x.replace(/#! *(name|desc) *= *(.+)/, '$1: "$2"'));
 
-						} else if (isLooniOS && iconReplace == "禁用") {
+						} else if (isLooniOS && iconReplace == "启用") {
 							pluginDesc.push(x.replace(
 								/^#! *icon *= *.*/, pluginIcon));
 						} else {
