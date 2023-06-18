@@ -263,7 +263,7 @@ icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-L
 						if (isStashiOS) {
 							pluginDesc.push(x = x.replace(/#! *(name|desc) *= *(.+)/, '$1: "$2"'));
 
-						} else if (isLooniOS && iconReplace == "启用") {
+						} else if (isLooniOS && iconReplace == "禁用") {
 							pluginDesc.push(x.replace(
 								/^#! *icon *= *.*/, pluginIcon));
 						} else {
