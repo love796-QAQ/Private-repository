@@ -87,8 +87,8 @@ if (rewriteName == "weibo") {
 } else if (rewriteName == "cainiao") {
 	name = "菜鸟";
 	desc = "过滤菜鸟广告";
-	author = "ddgksf2013";
-	homepage = "https://github.com/ddgksf2013/ddgksf2013";
+	author = "RuCu6";
+	homepage = "https://github.com/RuCu6/QuanX";
 } else if (rewriteName == "amap") {
 	name = "高德地图";
 	desc = "过滤高德地图广告";
