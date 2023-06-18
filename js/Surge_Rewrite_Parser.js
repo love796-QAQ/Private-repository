@@ -77,7 +77,7 @@ if (isLooniOS) {
 	desc = "desc: " + decodeURIComponent(desc);
 };
 
-let npluginDesc = name + "\n" + desc;
+let npluginDesc = name + "\n" + desc + "\n" + author + "\n" + homepage;
 //随机图标在插件中设置，默认启用
 
 if (isLooniOS && iconStatus == "启用") {
@@ -86,10 +86,10 @@ if (isLooniOS && iconStatus == "启用") {
 	let randomStickerNum = parseInt(stickerStartNum + Math.random() * stickerSum).toString();
 	icon = "#!icon=" + "https://github.com/Toperlock/Quantumult/raw/main/icon/" + iconLibrary2 + "/" + iconLibrary2 + "-" + randomStickerNum + ".png";
 };
-const pluginIcon = icon;
-console.log(pluginIcon);
 let randomStickerNum = rewriteName;
 icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum + ".png";
+const pluginIcon = icon;
+console.log(pluginIcon);
 
 !(async () => {
 	let body = await http(req);
