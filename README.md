@@ -8,8 +8,8 @@
 
 > 去广告
 
-| :-----| :-----| :-----| :-----| :-----| :-----|
 | [启动页](https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | [酷安](https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | [百度网盘](https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | [微博](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/weibo.snippetqx) | [菜鸟](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/cainiao.snippetqx) | [高德地图](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/amap.snippetqx) |
+| :-----| :-----| :-----| :-----| :-----| :-----|
 | [小红书](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/xiaohongshu.snippetqx) |
 | [网易云音乐](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/cloudmusic.snippetqx) |
 | [知乎](https://raw.githubusercontent.com/RuCu6/QuanX/main/Rewrites/Cube/zhihu.snippetqx) |
