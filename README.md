@@ -6,11 +6,7 @@
 
 | 应用 | 链接 |
 | :-----| :-----|
-| [转换器](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | 
-```
-https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin
-```
- |
+| [转换器](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin) | ```https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/Plugin/Rewrite_to_Loon.plugin``` |
 
 > 去广告
 
