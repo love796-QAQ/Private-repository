@@ -225,7 +225,7 @@ console.log(pluginIcon);
 			} else { };//开启脚本转换结束
 
 			//剔除已注释重写
-			if (delNoteSc === true && x.match(/^#/)) {
+			if (delNoteSc === true && x.match(/^#/) && x.indexOf("#!") == -1) {
 				x = x.replace(/(.+)/, '')
 			};//剔除已注释重写结束
 
@@ -536,7 +536,9 @@ console.log(pluginIcon);
 		if (isLooniOS) {
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
+			if (nName != null) {
+				pluginDesc = npluginDesc + "\n" + pluginIcon;
+			} else if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
 
 				if (pluginDesc.search(/#! *icon *= *.+/) == -1) {
 					pluginDesc = pluginDesc + "\n" + pluginIcon;
@@ -571,11 +573,14 @@ ${script}
 ${MITM}`
 				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
 				.replace(/\n{2,}/g, '\n\n')
-		} else if (isSurgeiOS || isLanceX || isEgern) {
+		} else if (isSurgeiOS || isShadowrocket || isLanceX || isEgern) {
 
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (pluginDesc != "" && pluginDesc.search(/^#! *name *=/) != -1) {
+			if (nName != null) {
+				pluginDesc = npluginDesc;
+
+			} else if (pluginDesc != "" && pluginDesc.search(/^#! *name *=/) != -1) {
 				pluginDesc = pluginDesc;
 			} else {
 				pluginDesc = npluginDesc;
@@ -604,39 +609,14 @@ ${MapLocal}
 ${MITM}`
 				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
 				.replace(/\n{2,}/g, '\n\n')
-		} else if (isShadowrocket) {
-
-			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
-
-			if (pluginDesc != "" && pluginDesc.search(/^#! *name *=/) != -1) {
-				pluginDesc = pluginDesc;
-			} else {
-				pluginDesc = npluginDesc;
-			};
-
-			script = (script[0] || '') && `[Script]\n\n${script.join("\n\n")}`;
-
-			URLRewrite = (URLRewrite[0] || '') && `[URL Rewrite]\n\n${URLRewrite.join("\n")}`;
-
-			others = (others[0] || '') && `${others.join("\n\n")}`;
-
-			body = `${pluginDesc}
-
-
-${URLRewrite}
-
-
-${script}
-
-
-${MITM}`
-				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
-				.replace(/\n{2,}/g, '\n\n')
 		} else if (isStashiOS) {
 
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (pluginDesc != "" && pluginDesc.search(/name: /) != -1) {
+			if (nName != null) {
+				pluginDesc = npluginDesc;
+
+			} else if (pluginDesc != "" && pluginDesc.search(/name: /) != -1) {
 				pluginDesc = pluginDesc;
 			} else {
 				pluginDesc = npluginDesc;
