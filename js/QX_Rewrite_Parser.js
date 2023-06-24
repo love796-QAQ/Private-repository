@@ -54,8 +54,10 @@ var Pout0 = urlArg.search(/\?x=|&x=/) != -1 ? (urlArg.split(/\?x=|&x=/)[1].split
 var hnAdd = urlArg.search(/\?hnadd=|&hnadd=/) != -1 ? (urlArg.split(/\?hnadd=|&hnadd=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
 var hnDel = urlArg.search(/\?hndel=|&hndel=/) != -1 ? (urlArg.split(/\?hndel=|&hndel=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
 var jsConverter = urlArg.search(/\?jsc=|&jsc=/) != -1 ? (urlArg.split(/\?jsc=|&jsc=/)[1].split("&")[0].split("+")) : null;
-var icon = "";
 var delNoteSc = urlArg.search(/\?del=|&del=/) != -1 ? true : false;
+var nCron = urlArg.search(/\?cron=|&cron=/) != -1 ? (urlArg.split(/\?cron=|&cron=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
+var nCronExp = urlArg.search(/\?cronexp=|&cronexp=/) != -1 ? (urlArg.split(/\?cronexp=|&cronexp=/)[1].split("&")[0].replace(/\./g, " ").split("+")).map(decodeURIComponent) : null;
+var icon = "";
 //修改名字和简介
 if (nName === null) {
 	name = rewriteName;
@@ -122,8 +124,8 @@ if (isShadowrocket || isLooniOS || isSurgeiOS || isLanceX || isEgern) {
 	author = "#!author=" + decodeURIComponent(author);
 	homepage = "#!homepage=" + decodeURIComponent(homepage);
 } else if (isStashiOS) {
-	name = "name: " + decodeURIComponent(name);
-	desc = "desc: " + decodeURIComponent(desc);
+	name = 'name: ' + '"' + decodeURIComponent(name) + '"';
+	desc = 'desc: ' + '"' + decodeURIComponent(desc) + '"';
 };
 let npluginDesc = name + "\n" + desc + "\n" + author + "\n" + homepage;
 
@@ -137,12 +139,12 @@ if (isLooniOS && iconStatus == "启用") {
 let randomStickerNum = rewriteName;
 icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum + ".png";
 const pluginIcon = icon;
-console.log(pluginIcon);
+console.log("插件图标：" + pluginIcon);
 
 !(async () => {
 	let body = await http(req);
 	//判断是否断网
-	if (body == null) {
+	if (body == null || body == "") {
 		if (isSurgeiOS || isLanceX || isStashiOS || isEgern) {
 			console.log("QX转换：未获取到body的链接为" + $request.url)
 			$notification.post("QX转换：未获取到body", "请检查网络及节点是否畅通\n" + "源链接为" + $request.url, "认为是bug?点击通知反馈", { url: "https://t.me/zhangpeifu" })
@@ -189,7 +191,7 @@ console.log(pluginIcon);
 				for (let i = 0; i < Pout0.length; i++) {
 					const elem = Pout0[i];
 					if (x.indexOf(elem) != -1 && x.search(/^hostname=/) == -1) {
-						x = x.replace(/(.+)/, "#$1")
+						x = "#" + x;
 					} else { };
 				};//循环结束
 			} else { };//增加注释结束
@@ -226,11 +228,11 @@ console.log(pluginIcon);
 
 			//剔除已注释重写
 			if (delNoteSc === true && x.match(/^#/) && x.indexOf("#!") == -1) {
-				x = x.replace(/(.+)/, '')
+				x = "";
 			};//剔除已注释重写结束
 
 			let type = x.match(
-				/^#!|\x20url\x20script-|\x20url\x20reject$|\x20url\x20reject-|\x20echo-response\x20|\-header\x20|^hostname| url 30|\x20(request|response)-body|[^\s]+ [^u\s]+ [^\s]+ [^\s]+ [^\s]+ ([^\s] )?(https?|ftp|file)/
+				/^#!|\x20url\x20script-|\x20url\x20reject$|\x20url\x20reject-|\x20echo-response\x20|\-header\x20|^hostname| url 30|\x20(request|response)-body|[^\s]+ [^u\s]+ [^\s]+ [^\s]+ [^\s]+ ([^\s]+ )?(https?|ftp|file)/
 			)?.[0];
 			//判断注释
 			if (isLooniOS || isSurgeiOS || isLanceX || isShadowrocket || isEgern) {
@@ -261,14 +263,24 @@ console.log(pluginIcon);
 					//简介            
 					case "#!":
 						if (isStashiOS) {
-							pluginDesc.push(x = x.replace(/#! *(name|desc) *= *(.+)/, '$1: "$2"'));
+							x = x.replace(/^#! *(name|desc) *= *(.*)/, '$1: "$2"');
 
-						} else if (isLooniOS && iconReplace == "启用") {
-							pluginDesc.push(x.replace(
-								/^#! *icon *= *.*/, pluginIcon));
-						} else {
+							if (nName != null) {
+								x = x.replace(/^name:.*/, name).replace(/^desc:.*/, desc);
+							};
 							pluginDesc.push(x);
 						};
+
+						if (isLooniOS || isSurgeiOS || isShadowrocket) {
+							if (nName != null) {
+								x = x.replace(/^#!name *=.*/, name).replace(/^#!desc *=.*/, desc);
+							};
+							if (iconReplace == "启用") {
+								x = x.replace(/^#!icon *=.*/, pluginIcon);
+							};
+							pluginDesc.push(x);
+						};
+
 						break;
 
 					case " url script-":
@@ -508,6 +520,15 @@ console.log(pluginIcon);
 								cronExp = x.replace(/\x20{2,}/g, " ").split(/\x20(https?|ftp|file)/)[0].replace(/[^\s]+ ([^\s]+ [^\s]+ [^\s]+ [^\s]+ [^\s]+)/, '$1').replace(/^#/, '');
 							};
 
+							if (nCron != null) {
+								for (let i = 0; i < nCron.length; i++) {
+									const elem = nCron[i];
+									if (x.indexOf(elem) != -1) {
+										cronExp = nCronExp[i];
+									};
+								};
+							};
+
 							let cronJs = x.split("://")[0].replace(/.+\x20([^\s]+)$/, "$1") + "://" + x.split("://")[1].split(",")[0];
 
 							let croName = cronJs.substring(cronJs.lastIndexOf('/') + 1, cronJs.lastIndexOf('.'));
@@ -536,9 +557,7 @@ console.log(pluginIcon);
 		if (isLooniOS) {
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (nName != null) {
-				pluginDesc = npluginDesc + "\n" + pluginIcon;
-			} else if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
+			if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
 
 				if (pluginDesc.search(/#! *icon *= *.+/) == -1) {
 					pluginDesc = pluginDesc + "\n" + pluginIcon;
@@ -549,10 +568,8 @@ console.log(pluginIcon);
 				pluginDesc = npluginDesc + "\n" + pluginIcon;
 			};
 
-			pluginDesc = npluginDesc + "\n" + pluginIcon;
-
 			if (iconReplace == "启用" && pluginDesc.search(/#!icon=/) == -1) {
-				pluginDesc = pluginDesc.replace(/(.)$/, "$1\n" + pluginIcon)
+				pluginDesc = pluginDesc + "\n" + pluginIcon
 			};
 
 			script = (script[0] || '') && `[Script]\n\n${script.join("\n\n")}`;
@@ -577,10 +594,7 @@ ${MITM}`
 
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (nName != null) {
-				pluginDesc = npluginDesc;
-
-			} else if (pluginDesc != "" && pluginDesc.search(/^#! *name *=/) != -1) {
+			if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
 				pluginDesc = pluginDesc;
 			} else {
 				pluginDesc = npluginDesc;
@@ -613,10 +627,7 @@ ${MITM}`
 
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (nName != null) {
-				pluginDesc = npluginDesc;
-
-			} else if (pluginDesc != "" && pluginDesc.search(/name: /) != -1) {
+			if (pluginDesc != "" && pluginDesc.search(/name: /) != -1) {
 				pluginDesc = pluginDesc;
 			} else {
 				pluginDesc = npluginDesc;

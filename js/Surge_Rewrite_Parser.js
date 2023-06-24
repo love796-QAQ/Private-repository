@@ -1,5 +1,5 @@
 /****************************
-支持将Surge重写解析至Loon Stash
+支持将Surge重写解析至Loon Stash Surge Shadowrocket
 说明
 原脚本作者@小白脸 脚本修改@chengkongyiban
 感谢@xream 提供的echo-response.js
@@ -7,6 +7,8 @@
 ***************************/
 const isStashiOS = 'undefined' !== typeof $environment && $environment['stash-version'];
 const isLooniOS = 'undefined' != typeof $loon;
+const isSurgeiOS = 'undefined' !== typeof $environment && $environment['surge-version'];
+const isShadowrocket = 'undefined' !== typeof $rocket;
 const iconStatus = $persistentStore.read("启用插件随机图标") ?? "启用";
 const iconReplace = $persistentStore.read("替换原始插件图标");
 const iconLibrary1 = $persistentStore.read("插件随机图标合集") ?? "Doraemon(100P)";
@@ -18,7 +20,7 @@ var author = "";
 var homepage = "";
 var req
 var urlArg
-if (isLooniOS) {
+if (isLooniOS || isSurgeiOS || isShadowrocket) {
 	req = $request.url.replace(/sg$|sg\?.*/, '');
 	if ($request.url.indexOf("sg?") != -1) {
 		urlArg = "?" + $request.url.split("sg?")[1];
@@ -38,8 +40,10 @@ var Pin0 = urlArg.search(/\?y=|&y=/) != -1 ? (urlArg.split(/\?y=|&y=/)[1].split(
 var Pout0 = urlArg.search(/\?x=|&x=/) != -1 ? (urlArg.split(/\?x=|&x=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
 var hnAdd = urlArg.search(/\?hnadd=|&hnadd=/) != -1 ? (urlArg.split(/\?hnadd=|&hnadd=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
 var hnDel = urlArg.search(/\?hndel=|&hndel=/) != -1 ? (urlArg.split(/\?hndel=|&hndel=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
+var delNoteSc = urlArg.search(/\?del=|&del=/) != -1 ? true : false;
+var nCron = urlArg.search(/\?cron=|&cron=/) != -1 ? (urlArg.split(/\?cron=|&cron=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
+var nCronExp = urlArg.search(/\?cronexp=|&cronexp=/) != -1 ? (urlArg.split(/\?cronexp=|&cronexp=/)[1].split("&")[0].replace(/\./g, " ").split("+")).map(decodeURIComponent) : null;
 var icon = "";
-var delNoteSc = urlArg.indexOf("del=") != -1 ? true : false;
 //修改名字和简介
 if (nName === null) {
 	name = rewriteName;
@@ -66,19 +70,19 @@ if (rewriteName == "spotify") {
 	author = "app2smile";
 	homepage = "https://github.com/app2smile/rules";
 };
-if (isLooniOS) {
+if (isLooniOS || isSurgeiOS || isShadowrocket) {
 	name = "#!name=" + decodeURIComponent(name);
 	desc = "#!desc=" + decodeURIComponent(desc);
 	author = "#!author=" + decodeURIComponent(author);
 	homepage = "#!homepage=" + decodeURIComponent(homepage);
 } else if (isStashiOS) {
-	name = "name: " + decodeURIComponent(name);
-	desc = "desc: " + decodeURIComponent(desc);
+	name = 'name: ' + '"' + decodeURIComponent(name) + '"';
+	desc = 'desc: ' + '"' + decodeURIComponent(desc) + '"';
 };
 
 let npluginDesc = name + "\n" + desc + "\n" + author + "\n" + homepage;
-//随机图标在插件中设置，默认启用
 
+//随机图标在插件中设置，默认启用
 if (isLooniOS && iconStatus == "启用") {
 	const stickerStartNum = 1001;
 	const stickerSum = iconLibrary1.split("(")[1].split("P")[0];
@@ -88,13 +92,13 @@ if (isLooniOS && iconStatus == "启用") {
 let randomStickerNum = rewriteName;
 icon = "#!icon=" + "https://raw.githubusercontent.com/love796-QAQ/Private-Loon-Library/main/icon/" + randomStickerNum + ".png";
 const pluginIcon = icon;
-console.log(pluginIcon);
+console.log("插件图标：" + pluginIcon);
 
 !(async () => {
 	let body = await http(req);
 	//判断是否断网
-	if (body == null) {
-		if (isStashiOS) {
+	if (body == null || body == "") {
+		if (isStashiOS || isSurgeiOS) {
 			console.log("Surge转换：未获取到body的链接为" + $request.url)
 			$notification.post("Surge转换：未获取到body", "请检查网络及节点是否畅通\n" + "源链接为" + $request.url, "认为是bug?点击通知反馈", { url: "https://t.me/zhangpeifu" })
 			$done({ response: { status: 404, body: {} } });
@@ -116,17 +120,21 @@ console.log(pluginIcon);
 		let pluginDesc = [];
 		let httpFrame = "";
 		let General = [];
+		let Panel = [];
 		let rules = [];
 		let script = [];
 		let URLRewrite = [];
 		let HeaderRewrite = [];
+		let MapLocal = [];
 		let cron = [];
 		let providers = [];
 		let MITM = "";
 		let others = [];          //不支持的内容
 
+
+
 		body.forEach((x, y, z) => {
-			x = x.replace(/^ *(#|;|\/\/)/, '#').replace(/, *REJECT/i, ',REJECT').replace(/ reject/i, ' reject').replace(/(^[^#].+)\x20+\/\/.+/, "$1").replace(/(hostname|force-http-engine-hosts|skip-proxy|always-real-ip)\x20*=/, '$1=').replace(/cronexpr?\x20*=\x20*/gi, 'cronexp=');
+			x = x.replace(/^ *(#|;|\/\/)/, '#').replace(/(^[^#].+)\x20+\/\/.+/, "$1").replace(/, *REJECT([^,\s]*)$/i, ',REJECT$1').replace(/, *DIRECT$/i, ',DIRECT').replace(/ reject/i, ' reject').replace(/(hostname|force-http-engine-hosts|skip-proxy|always-real-ip)\x20*=/, '$1=').replace(/cronexpr?\x20*=\x20*/gi, 'cronexp=').replace(/type *= *generic *,/i, "type=generic,").replace(/script-name *=/, "script-name=");
 			//去掉注释
 			if (Pin0 != null) {
 				for (let i = 0; i < Pin0.length; i++) {
@@ -142,7 +150,7 @@ console.log(pluginIcon);
 				for (let i = 0; i < Pout0.length; i++) {
 					const elem = Pout0[i];
 					if (x.indexOf(elem) != -1 && x.search(/^(hostname|force-http-engine-hosts|skip-proxy|always-real-ip)=/) == -1) {
-						x = x.replace(/(.+)/, "#$1")
+						x = "#" + x;
 					} else { };
 				};//循环结束
 			} else { };//增加注释结束
@@ -168,14 +176,14 @@ console.log(pluginIcon);
 			} else { };//删除主机名结束
 
 			if (delNoteSc === true && x.match(/^#/) && x.indexOf("#!") == -1) {
-				x = x.replace(/(.+)/g, '')
+				x = "";
 			};
 
 			let type = x.match(
-				/^#!|http-re|\x20header-|cronexp=|\x20reject|\x20data=|^hostname|^force-http-engine-hosts|^skip-proxy|^always-real-ip|\x20(302|307|header)$|^#?(URL-REGEX|USER-AGENT|IP-CIDR|GEOIP|IP-ASN|DOMAIN|DEST-PORT)/
+				/^#!|http-re|\x20header-|type=generic,|script-name=|cronexp=|\x20reject|\x20data=|^hostname|^force-http-engine-hosts|^skip-proxy|^always-real-ip|\x20(302|307|header)$|,REJECT[^,\s]*$|,DIRECT/
 			)?.[0];
 			//判断注释
-			if (isLooniOS) {
+			if (isLooniOS || isSurgeiOS || isShadowrocket) {
 
 				if (x.match(/^[^#]/)) {
 					var noteK = "";
@@ -203,12 +211,42 @@ console.log(pluginIcon);
 					//简介            
 					case "#!":
 						if (isStashiOS) {
-							pluginDesc.push(x = x.replace(/#! *(name|desc) *= *(.+)/, '$1: "$2"'));
-						} else if (isLooniOS && iconReplace == "启用") {
-							pluginDesc.push(x.replace(
-								/^#! *icon *= *.*/, pluginIcon));
-						} else {
+							x = x.replace(/^#! *(name|desc) *= *(.*)/, '$1: "$2"');
+
+							if (nName != null) {
+								x = x.replace(/^name:.*/, name).replace(/^desc:.*/, desc);
+							};
 							pluginDesc.push(x);
+						};
+
+						if (isLooniOS || isSurgeiOS || isShadowrocket) {
+							if (nName != null) {
+								x = x.replace(/^#!name *=.*/, name).replace(/^#!desc *=.*/, desc);
+							};
+							if (iconReplace == "启用") {
+								x = x.replace(/^#!icon *=.*/, pluginIcon);
+							};
+							pluginDesc.push(x);
+						};
+
+						break;
+					//Panel脚本            
+					case "type=generic,":
+
+						if (isSurgeiOS) {
+
+							z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
+							script.push(x);
+						};
+
+						break;
+					//Panel配置            
+					case "script-name=":
+
+						if (isSurgeiOS) {
+
+							z[y - 1]?.match(/^#/) && [Panel].push(z[y - 1]);
+							Panel.push(x);
 						};
 
 						break;
@@ -282,6 +320,11 @@ console.log(pluginIcon);
 									`${noteKn4}- match: ${ptn}${noteKn6}name: ${scname}_${y}${noteKn6}type: ${sctype}${noteKn6}timeout: 30${noteKn6}${rebody}${noteKn6}${size}${arg}${noteKn6}${proto}`);
 								providers.push(
 									`${noteK2}${scname}_${y}:${noteKn4}url: ${js}${noteKn4}interval: 86400`);
+							} else {
+
+								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
+								script.push(x)
+
 							};
 
 						} else if (x.match(/\x20header-/)) {
@@ -299,6 +342,10 @@ console.log(pluginIcon);
 								let hdtype = x.match(/http-response/) ? 'response ' : 'request';
 
 								HeaderRewrite.push(`${noteK4}- ` + x.replace(/#?http-(response|request)\x20+/, "").replace("\x20header-", `\x20${hdtype}-`))
+							} else if (isSurgeiOS) {
+
+								z[y - 1]?.match(/^#/) && HeaderRewrite.push(z[y - 1]);
+								HeaderRewrite.push(x);
 							};
 
 						} else if (x.match(/http-(response|request)\x20/)) {
@@ -365,6 +412,10 @@ console.log(pluginIcon);
 								providers.push(
 									`${noteK2}${scname}_${y}:${noteKn4}url: ${js}${noteKn4}interval: 86400`
 								);
+							} else {
+
+								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
+								script.push(x)
 							};
 
 						} else {
@@ -390,6 +441,10 @@ console.log(pluginIcon);
 							let hdtype = x.match(/http-response/) ? 'response ' : 'request';
 
 							HeaderRewrite.push(`${noteK4}- ` + x.replace(/#?http-(response|request)\x20+/, "").replace("\x20header-", `\x20${hdtype}-`))
+						} else if (isSurgeiOS) {
+
+							z[y - 1]?.match(/^#/) && HeaderRewrite.push(z[y - 1]);
+							HeaderRewrite.push(x);
 						};//HeaderRewrite结束
 
 						break;
@@ -403,6 +458,21 @@ console.log(pluginIcon);
 						} else {
 							cronExp = x.split("cronexp=")[1].replace(/"/g, '');
 						};
+
+						if (isStashiOS) {
+
+							cronExp = cronExp.replace(/[^\s]+ ([^\s]+ [^\s]+ [^\s]+ [^\s]+ [^\s]+)/, '$1');
+						};
+
+						if (nCron != null) {
+							for (let i = 0; i < nCron.length; i++) {
+								const elem = nCron[i];
+								if (x.indexOf(elem) != -1) {
+									cronExp = nCronExp[i];
+								};
+							};
+						};
+
 						let croName = x.split("=")[0].replace(/\x20/g, "").replace(/^#/, '')
 
 						let cronJs = x.replace(/\x20/gi, "").split("script-path=")[1].split(",")[0];
@@ -413,15 +483,18 @@ console.log(pluginIcon);
 								`${noteK}cron "${cronExp}" script-path=${cronJs}, timeout=60, tag=${croName}`);
 						} else if (isStashiOS) {
 
-							cronExp = cronExp.replace(/[^\s]+ ([^\s]+ [^\s]+ [^\s]+ [^\s]+ [^\s]+)/, '$1');
-
 							cron.push(
 								`${noteKn4}- name: ${croName}${noteKn6}cron: "${cronExp}"${noteKn6}timeout: 60`
 							);
 							providers.push(
 								`${noteK2}${croName}:${noteKn4}url: ${cronJs}${noteKn4}interval: 86400`
 							);
+						} else {
 
+							z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
+							script.push(
+								`${noteK}${croName} = type=cron, cronexp="${cronExp}", script-path=${cronJs}, timeout=60, wake-system=1`
+							);
 						};
 						break;
 
@@ -448,6 +521,41 @@ console.log(pluginIcon);
 
 							URLRewrite.push(
 								`${noteKn4}- ${rejectPtn} - ${rejectType}`);
+
+						} else if (isShadowrocket) {
+
+							z[y - 1]?.match(/^#/) && URLRewrite.push(z[y - 1]);
+
+							URLRewrite.push(
+								`${noteK}${rejectPtn} - ${rejectType}`);
+
+						} else if (isSurgeiOS) {
+
+							if (rejectType.match("-")) {
+								//reject-                    
+
+								z[y - 1]?.match(/^#/) && MapLocal.push(z[y - 1]);
+
+								if (rejectType.match(/dict$/)) {
+									rejectType = "https://raw.githubusercontent.com/mieqq/mieqq/master/reject-dict.json"
+								} else if (rejectType.match(/array$/)) {
+									rejectType = "https://raw.githubusercontent.com/mieqq/mieqq/master/reject-array.json"
+								} else if (rejectType.match(/200$/)) {
+									rejectType = "https://raw.githubusercontent.com/mieqq/mieqq/master/reject-200.txt"
+								} else if (rejectType.match(/img$/)) {
+									rejectType = "https://raw.githubusercontent.com/mieqq/mieqq/master/reject-img.gif"
+								};
+								MapLocal.push(
+									`${rejectPtn} data="${rejectType}"`);
+
+							} else {//reject
+
+								z[y - 1]?.match(/^#/) && URLRewrite.push(z[y - 1]);
+
+								URLRewrite.push(
+									`${noteK}${rejectPtn} - reject`);
+
+							}
 
 						};
 						break;
@@ -478,7 +586,7 @@ console.log(pluginIcon);
 								mock2Reject = "-img";
 							};
 
-							if (isLooniOS) {
+							if (isLooniOS || isShadowrocket) {
 
 								z[y - 1]?.match(/^#/) && URLRewrite.push(z[y - 1]);
 
@@ -490,11 +598,15 @@ console.log(pluginIcon);
 
 								URLRewrite.push(
 									`${noteKn4}- ${ptn} - reject${mock2Reject}`);
+							} else {
+
+								z[y - 1]?.match(/^#/) && URLRewrite.push(z[y - 1]);
+								URLRewrite.push(x);
 							};
 
 						} else {
 
-							if (isLooniOS) {
+							if (isLooniOS || isShadowrocket) {
 
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
 
@@ -510,6 +622,10 @@ console.log(pluginIcon);
 
 								providers.push(
 									`${noteK2}${scname}_${y}:${noteKn4}url: https://raw.githubusercontent.com/xream/scripts/main/surge/modules/echo-response/index.js${noteKn4}interval: 86400`);
+							} else {
+
+								z[y - 1]?.match(/^#/) && Maplocal.push(z[y - 1]);
+								Maplocal.push(x);
 							};
 						};
 						break;
@@ -521,7 +637,7 @@ console.log(pluginIcon);
 							MITM = x.replace(/%.*%/g, " ").replace(/\x20/g, "").replace(/,{2,}/g, ",").replace(/,*\x20*$/, "").replace(/hostname=(.*)/, `[MITM]\n\nhostname = $1`).replace(/=\x20,+/, "= ");
 						} else if (isStashiOS) {
 							MITM = x.replace(/%.*%/g, "").replace(/\x20/g, "").replace(/,{2,}/g, ",").replace(/,*\x20*$/, "").replace(/hostname=(.*)/, `t&2;mitm:\nt&hn;"$1"`).replace(/",+/, '"');
-						};
+						} else { MITM = "[MITM]\n\n" + x; };
 						break;
 
 					//general          
@@ -532,14 +648,14 @@ console.log(pluginIcon);
 							General.push(x.replace(/%.*%/g, "").replace(/ *= */, " = "));
 						} else if (isStashiOS) {
 							General.push(x.replace(/%.*%/g, "").replace(/\x20/g, "").replace(/,{2,}/g, ",").replace(/,*\x20*$/, "").replace(/force-http-engine-hosts=(.*)/, `t&2;force-http-engine:\nt&hn;"$1"`).replace(/",+/, '"'))
-						};
+						} else { General.push(x); };
 						break;
 
 					case "skip-proxy":
 
 						if (isLooniOS) {
 							General.push(x.replace(/%.*%/g, "").replace(/ *= */, " = "));
-						} else if (isStashiOS) { };
+						} else if (isStashiOS) { } else { General.push(x); };
 						break;
 
 					case "always-real-ip":
@@ -548,7 +664,7 @@ console.log(pluginIcon);
 							General.push(x.replace(/%.*%/g, "").replace(/ *= */, " = "));
 						} else if (isStashiOS) {
 							General.push(x.replace(/%.*%/g, "").replace(/\x20/g, "").replace(/,{2,}/g, ",").replace(/,*\x20*$/, "").replace(/always-real-ip=(.*)/, `t&2;fake-ip-filter:\nt&hn;"$1"`).replace(/",+/, '"'))
-						};
+						} else { General.push(x); };
 						break;
 
 					default:
@@ -564,49 +680,66 @@ console.log(pluginIcon);
 								z[y - 1]?.match(/^#/) && URLRewrite.push("    " + z[y - 1]);
 
 								URLRewrite.push(x.replace(/\x20{2,}/g, " ").replace(/(^#)?(.+?)\x20(.+?)\x20(302|307|header)/, `${noteKn4}- $2 $3 $4`));
+							} else {
+
+								z[y - 1]?.match(/^#/) && URLRewrite.push(z[y - 1]);
+								URLRewrite.push(x);
 							};
 
-						} else {
+							//重定向处理完毕 开始处理Loon Stash不支持的rule	
+						} else if ((isLooniOS || isStashiOS) && x.match(/^#?(AND|NOT|OR|RULE-SET|DOMAIN-SET|SCRIPT) *,/)) {
 
-							if (isLooniOS) {
-								z[y - 1]?.match(/^#/) && rules.push(z[y - 1]);
+						} else if (isLooniOS && x.match(/^#?DE?ST-PORT/)) {
 
-								rules.push(x.replace(/#?(.+)/, `${noteK}$1`).replace(/-NO-DROP$|-TINYGIF$|-200$/, "").replace(/.*DEST-PORT.+/, "").replace(/.*DOMAIN-SET.+/, ""));
-							} else if (isStashiOS) {
+						} else if (isStashiOS && x.match(/^#?USER-AGENT *,/)) {
 
-								if (type.match(/URL-REGEX/i) && x.match(/,\x20*REJECT/i)) {
+						} else if (isStashiOS && x.match(/^#?URL-REGEX *,/)) {
+							//开始处理stash URL-REGEX转reject                    
+							if (x.match(/, *REJECT([^,\s]*)$/)) {
 
-									z[y - 1]?.match(/^#/) && URLRewrite.push("    " + z[y - 1]);
-									x = x.replace(/\x20/, "");
+								z[y - 1]?.match(/^#/) && URLRewrite.push("    " + z[y - 1]);
+								x = x.replace(/\x20/, "");
 
-									let Urx2Reject
+								let Urx2Reject
 
-									if (x.match(/DICT$/i)) {
-										Urx2Reject = '-dict';
-									} else if (x.match(/ARRAY$/i)) {
-										Urx2Reject = '-array';
-									} else if (x.match(/200$|DROP$/i)) {
-										Urx2Reject = '-200';
-									} else if (x.match(/IMG$|TINYGIF$/i)) {
-										Urx2Reject = '-img';
-									} else if (x.match(/REJECT$/i)) {
-										Urx2Reject = '';
-									};
-
-									URLRewrite.push(
-										x.replace(/.*URL-REGEX,([^\s]+),[^,]+/,
-											`${noteKn4}- $1 - reject${Urx2Reject}`)
-									);
-								} else if (type.match(/#?(USER-AGENT|IP-CIDR|GEOIP|IP-ASN|DOMAIN|DEST-PORT)/)) {
-									z[y - 1]?.match(/^#/) && rules.push("    " + z[y - 1]);
-
-									rules.push(x.replace(/\x20/g, "").replace(/.*DOMAIN-SET.+/, "").replace(/,REJECT.+/, ",REJECT").replace(/DEST-PORT/, "DST-PORT").replace(/^#?(.+)/, `${noteK2}- $1`))
-								} else {
-									let lineNum = (original.indexOf(x) + 2) / 2;
-									others.push(lineNum + "行" + x)
+								if (x.match(/DICT$/i)) {
+									Urx2Reject = '-dict';
+								} else if (x.match(/ARRAY$/i)) {
+									Urx2Reject = '-array';
+								} else if (x.match(/DROP$/i)) {
+									Urx2Reject = '-200';
+								} else if (x.match(/IMG$|TINYGIF$/i)) {
+									Urx2Reject = '-img';
+								} else if (x.match(/REJECT$/i)) {
+									Urx2Reject = '';
 								};
-							}//Stash rules处理完毕
-						}//rules处理完毕
+
+								URLRewrite.push(
+									x.replace(/.*URL-REGEX,([^\s]+),[^,]+/,
+										`${noteKn4}- $1 - reject${Urx2Reject}`)
+								);
+								//转reject结束          
+							} else {
+								let lineNum = (original.indexOf(x) + 2) / 2;
+								others.push(lineNum + "行" + x)
+							};//Stash URL-REGEX处理完毕         
+						} else if (isSurgeiOS || isShadowrocket || isLooniOS) {
+							x = x.replace(/" "/g, "");
+							z[y - 1]?.match(/^#/) && rules.push(z[y - 1]);
+							if (isLooniOS) {
+								rules.push(x.replace(/,REJECT-NO-DROP$/, ",REJECT-DROP").replace(/,REJECT-(200|TINYGIF)/, ",REJECT-IMG"));
+
+							} else if (isShadowrocket) {
+								rules.push(x.replace(/^#?DEST-PORT *,/, `${noteK}DST-PORT,`));
+							} else { rules.push(x); }//Loon Surge 火箭 rule处理完毕
+
+						} else if (isStashiOS) {
+							x = x.replace(/" "/g, "");
+							z[y - 1]?.match(/^#/) && rules.push("    " + z[y - 1]);
+							rules.push(
+								x.replace(/^#?(.+),(DIRECT$|REJECT)[^,]*$/, `${noteK2}- $1,$2`).replace(/- DEST-PORT/, "- DST-PORT"));
+						};//整个rule结束
+
 				} //switch结束
 			}
 		}); //循环结束
@@ -615,9 +748,7 @@ console.log(pluginIcon);
 
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (nName != null) {
-				pluginDesc = npluginDesc + "\n" + pluginIcon;
-			} else if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
+			if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
 
 				if (pluginDesc.search(/#! *icon *= *.+/) == -1) {
 					pluginDesc = pluginDesc + "\n" + pluginIcon;
@@ -631,7 +762,7 @@ console.log(pluginIcon);
 			pluginDesc = npluginDesc + "\n" + pluginIcon;
 
 			if (iconReplace == "启用" && pluginDesc.search(/#!icon=/) == -1) {
-				pluginDesc = pluginDesc.replace(/(.)$/, "$1\n" + pluginIcon)
+				pluginDesc = pluginDesc + "\n" + pluginIcon
 			};
 
 			General = (General[0] || '') && `[General]\n\n${General.join("\n\n")}`;
@@ -669,10 +800,7 @@ ${MITM}`
 
 			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
 
-			if (nName != null) {
-				pluginDesc = npluginDesc;
-
-			} else if (pluginDesc != "" && pluginDesc.search(/name: /) != -1) {
+			if (pluginDesc != "" && pluginDesc.search(/name: /) != -1) {
 				pluginDesc = pluginDesc;
 			} else {
 				pluginDesc = npluginDesc;
@@ -735,13 +863,64 @@ ${providers}`
 				.replace(/      \n/g, "")
 				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
 				.replace(/\n{2,}/g, '\n\n')
+		} else if (isSurgeiOS || isShadowrocket) {
+			pluginDesc = (pluginDesc[0] || '') && `${pluginDesc.join("\n")}`;
+
+			if (pluginDesc != "" && pluginDesc.search(/#! *name *=/) != -1) {
+				pluginDesc = pluginDesc;
+			} else {
+				pluginDesc = npluginDesc;
+			};
+			General = (General[0] || '') && `[General]\n\n${General.join("\n\n")}`;
+
+			Panel = (Panel[0] || '') && `[Panel]\n\n${Panel.join("\n\n")}`;
+
+			rules = (rules[0] || '') && `[Rule]\n\n${rules.join("\n")}`;
+
+			script = (script[0] || '') && `[Script]\n\n${script.join("\n\n")}`;
+
+			HeaderRewrite = (HeaderRewrite[0] || '') && `[Header Rewrite]\n\n${HeaderRewrite.join("\n")}`;
+
+			URLRewrite = (URLRewrite[0] || '') && `[URL Rewrite]\n\n${URLRewrite.join("\n")}`;
+
+			MapLocal = (MapLocal[0] || '') && `[Map Local]\n\n${MapLocal.join("\n\n")}`;
+
+			others = (others[0] || '') && `${others.join("\n\n")}`;
+
+			body = `${pluginDesc}
+	
+	
+	${General}
+	
+	
+	${Panel}
+	
+	
+	${rules}
+	
+	
+	${HeaderRewrite}
+	
+	
+	${URLRewrite}
+	
+	
+	${script}
+	
+	
+	${MapLocal}
+	
+	
+	${MITM}`
+				.replace(/(#.+\n)\n+(?!\[)/g, '$1')
+				.replace(/\n{2,}/g, '\n\n')
 		}
 
 
-		if (isStashiOS) {
+		if (isStashiOS || isSurgeiOS) {
 			others != "" && $notification.post("不支持的类型已跳过", "第" + others, "点击查看原文，长按可展开查看跳过行", { url: req });
 		} else {
-			if (isLooniOS) {
+			if (isLooniOS || isShadowrocket) {
 				others != "" && $notification.post("不支持的类型已跳过", "第" + others, "点击查看原文，长按可展开查看跳过行", req);
 			}
 		};
