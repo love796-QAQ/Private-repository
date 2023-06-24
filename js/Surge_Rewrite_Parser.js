@@ -759,8 +759,6 @@ console.log("插件图标：" + pluginIcon);
 				pluginDesc = npluginDesc + "\n" + pluginIcon;
 			};
 
-			pluginDesc = npluginDesc + "\n" + pluginIcon;
-
 			if (iconReplace == "启用" && pluginDesc.search(/#!icon=/) == -1) {
 				pluginDesc = pluginDesc + "\n" + pluginIcon
 			};
