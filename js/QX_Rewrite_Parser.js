@@ -46,7 +46,6 @@ if (isLooniOS || isSurgeiOS || isLanceX || isShadowrocket || isEgern) {
 	} else { urlArg = "" };
 };
 var rewriteName = req.substring(req.lastIndexOf('/') + 1).split('.')[0];
-var original = [];//用于获取原文行号
 //获取参数
 var nName = urlArg.search(/\?n=|&n=/) != -1 ? (urlArg.split(/\?n=|&n=/)[1].split("&")[0].split("+")) : null;
 var Pin0 = urlArg.search(/\?y=|&y=/) != -1 ? (urlArg.split(/\?y=|&y=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
@@ -54,6 +53,7 @@ var Pout0 = urlArg.search(/\?x=|&x=/) != -1 ? (urlArg.split(/\?x=|&x=/)[1].split
 var hnAdd = urlArg.search(/\?hnadd=|&hnadd=/) != -1 ? (urlArg.split(/\?hnadd=|&hnadd=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
 var hnDel = urlArg.search(/\?hndel=|&hndel=/) != -1 ? (urlArg.split(/\?hndel=|&hndel=/)[1].split("&")[0].replace(/%20/g, "").split(",")) : null;
 var jsConverter = urlArg.search(/\?jsc=|&jsc=/) != -1 ? (urlArg.split(/\?jsc=|&jsc=/)[1].split("&")[0].split("+")) : null;
+var jsConverter2 = urlArg.search(/\?jsc2=|&jsc2=/) != -1 ? (urlArg.split(/\?jsc2=|&jsc2=/)[1].split("&")[0].split("+")) : null;
 var delNoteSc = urlArg.search(/\?del=|&del=/) != -1 ? true : false;
 var nCron = urlArg.search(/\?cron=|&cron=/) != -1 ? (urlArg.split(/\?cron=|&cron=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
 var nCronExp = urlArg.search(/\?cronexp=|&cronexp=/) != -1 ? (urlArg.split(/\?cronexp=|&cronexp=/)[1].split("&")[0].replace(/\./g, " ").split("+")).map(decodeURIComponent) : null;
@@ -156,7 +156,6 @@ console.log("插件图标：" + pluginIcon);
 		}//识别客户端通知
 	} else {//以下开始重写及脚本转换
 
-		original = body.replace(/^ *(#|;|\/\/) */g, '#').replace(/\x20.+url-and-header\x20/, ' url ').replace(/\x20+url\x20+/g, " url ").replace(/(^[^#].+)\x20+\/\/.+/g, "$1").split("\n");
 
 		if (body.match(/\/\*+\n[\s\S]*\n\*+\/\n/)) {
 			body = body.replace(/[\s\S]*(\/\*+\n[\s\S]*\n\*+\/\n)[\s\S]*/, "$1").match(/[^\r\n]+/g);
@@ -169,10 +168,36 @@ console.log("插件图标：" + pluginIcon);
 		let URLRewrite = [];
 		let script = [];
 		let MapLocal = [];
+		let MITM = "";
 		let cron = [];
 		let providers = [];
-		let others = [];     //不支持的内容
-		let MITM = "";
+		let others = [];       //不支持的内容
+
+
+		let scname = "";       //脚本名
+		let js = "";           //脚本链接
+		let sctype = "";       //脚本类型
+		let ptn = "";          //正则
+		let rebody = "";       //是否需要body
+		let size = "";         //允许最大body大小
+		let proto = "";        //是否开启binary-body-mode
+		let cronExp = "";      //cron表达式
+		let croName = "";      //cron任务名
+		let cronJs = "";       //cron脚本链接
+		let rejectType = "";   //重写reject类型
+		let urlInNum = "";     //重写中"url"字样出现的位置
+		let reHdType = "";     //request|response-header
+		let reHdPtn = "";      //re-header 正则
+		let reHdArg1 = "";     //用以匹配的headers
+		let reHdArg2 = "";     //替换
+		let arg = "";          //echo-response 返回内容
+		let mockPtn = "";      //echo-res转mock 正则
+		let dataCon = "";      //echo-res转mock 返回内容
+		let reBdType = "";     //request|response-body
+		let reBdPtn = "";      //re-header 正则
+		let reBdArg1 = "";     //用以匹配的headers
+		let reBdArg2 = "";     //替换
+
 
 		body.forEach((x, y, z) => {
 			x = x.replace(/^ *(#|;|\/\/)/, '#').replace(/\x20.+url-and-header\x20/, ' url ').replace(/\x20+url\x20+/, " url ").replace(/^hostname\x20*=/, "hostname=").replace(/(^[^#].+)\x20+\/\/.+/, "$1");
@@ -225,6 +250,18 @@ console.log("插件图标：" + pluginIcon);
 					} else { };
 				};//循环结束
 			} else { };//开启脚本转换结束
+
+			//开启脚本转换2
+			if (jsConverter2 != null) {
+				for (let i = 0; i < jsConverter2.length; i++) {
+					const elem = jsConverter2[i];
+					if (x.indexOf(elem) != -1) {
+						jsctype = jsctype.toUpperCase();
+						x = x.replace(/\x20(https?|ftp|file)(:\/\/.+\.js)/g, ` $1$2_script-converter-${jsctype}.js`);
+					} else { };
+				};//循环结束
+			} else { };//开启脚本转换2结束
+
 
 			//剔除已注释重写
 			if (delNoteSc === true && x.match(/^#/) && x.indexOf("#!") == -1) {
@@ -285,31 +322,26 @@ console.log("插件图标：" + pluginIcon);
 
 					case " url script-":
 						//脚本			
-						let rebody
-						let size
-						let proto
 
-						let sctype = x.match(' script-response') ? 'response' : 'request';
+						sctype = x.match(' script-response') ? 'response' : 'request';
 
-						let urlInNum = x.replace(/\x20{2,}/g, " ").split(" ").indexOf("url");
+						urlInNum = x.replace(/\x20{2,}/g, " ").split(" ").indexOf("url");
 
-						let ptn = x.replace(/\x20{2,}/g, " ").split(" ")[urlInNum - 1].replace(/^#/, "");
+						ptn = x.replace(/\x20{2,}/g, " ").split(" ")[urlInNum - 1].replace(/^#/, "");
 
 						if (isSurgeiOS || isLanceX || isEgern) {
 							ptn = ptn.replace(/(.+,.+)/, '"$1"');
 						};
 
-						let js = x.replace(/\x20{2,}/g, " ").split(" ")[urlInNum + 2];
+						js = x.replace(/\x20{2,}/g, " ").split(" ")[urlInNum + 2];
 
-						if (isLooniOS || isSurgeiOS || isLanceX || isShadowrocket || isEgern) {
-							rebody = x.match(/\x20script[^\s]*(-body|-analyze)/) ? ', requires-body=true' : '';
+						rebody = x.match(/\x20script[^\s]*(-body|-analyze)/) ? ', requires-body=true' : '';
 
-							size = x.match(/\x20script[^\s]*(-body|-analyze)/) ? ', max-size=3145728' : '';
+						size = x.match(/\x20script[^\s]*(-body|-analyze)/) ? ', max-size=3145728' : '';
 
-							proto = js.match(/proto\.js/i) ? ', binary-body-mode=true' : '';
+						proto = js.match(/proto\.js/i) ? ', binary-body-mode=true' : '';
 
-							proto = js.match(/universe\.js/i) ? ', binary-body-mode=true' : '';
-						} else if (isStashiOS) {
+						if (isStashiOS) {
 
 							rebody = x.match(/\x20script[^\s]*(-body|-analyze)/) ? 'require-body: true' : '';
 
@@ -318,7 +350,7 @@ console.log("插件图标：" + pluginIcon);
 							proto = js.match(/proto\.js/i) ? 'binary-mode: true' : '';
 						};
 
-						let scname = js.substring(js.lastIndexOf('/') + 1, js.lastIndexOf('.'));
+						scname = js.substring(js.lastIndexOf('/') + 1, js.lastIndexOf('.'));
 
 						if (isLooniOS) {
 							z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
@@ -349,7 +381,7 @@ console.log("插件图标：" + pluginIcon);
 							URLRewrite.push(x.replace(/\x20{2,}/g, " ").replace(/(^#)?(.*?)\x20url\x20(reject-200|reject-img|reject-dict|reject-array)/, `${noteK}$2 - $3`));
 						} else if (isSurgeiOS) {
 							z[y - 1]?.match(/^#/) && MapLocal.push(z[y - 1]);
-							let rejectType
+
 							if (x.match(/dict$/)) {
 								rejectType = "https://raw.githubusercontent.com/mieqq/mieqq/master/reject-dict.json"
 							} else if (x.match(/array$/)) {
@@ -367,6 +399,7 @@ console.log("插件图标：" + pluginIcon);
 						break;
 
 					case " url reject":
+
 						if (isSurgeiOS || isLanceX || isShadowrocket || isLooniOS || isEgern) {
 							z[y - 1]?.match(/^#/) && URLRewrite.push(z[y - 1]);
 
@@ -381,16 +414,16 @@ console.log("插件图标：" + pluginIcon);
 					//(request|response)-header
 					case "-header ":
 
-						let reHdType = x.match(' response-header ') ? 'response' : 'request';
+						reHdType = x.match(' response-header ') ? 'response' : 'request';
 
-						let reHdPtn = x.replace(/\x20{2,}/g, " ").split(" url re")[0].replace(/^#/, "");
+						reHdPtn = x.replace(/\x20{2,}/g, " ").split(" url re")[0].replace(/^#/, "");
 						if (isSurgeiOS || isLanceX || isEgern) {
 							reHdPtn = reHdPtn.replace(/(.+,.+)/, '"$1"');
 						};
 
-						let reHdArg1 = x.split(" " + reHdType + "-header ")[1];
+						reHdArg1 = x.split(" " + reHdType + "-header ")[1];
 
-						let reHdArg2 = x.split(" " + reHdType + "-header ")[2];
+						reHdArg2 = x.split(" " + reHdType + "-header ")[2];
 
 						if (isLooniOS) {
 							z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
@@ -408,14 +441,15 @@ console.log("插件图标：" + pluginIcon);
 
 					case " echo-response ":
 
-						let arg = x.split(" echo-response ")[2];
+						arg = x.split(" echo-response ")[2];
 
 						if (/^(https?|ftp|file):\/\/.*/.test(arg)) {
 
-							let urlInNum = x.replace(/\x20{2,}/g, " ").split(" ").indexOf("url");
+							urlInNum = x.replace(/\x20{2,}/g, " ").split(" ").indexOf("url");
 
-							let ptn = x.replace(/\x20{2,}/g, " ").split(" ")[urlInNum - 1].replace(/^#/, "");
-							let scname = arg.substring(arg.lastIndexOf('/') + 1, arg.lastIndexOf('.'));
+							ptn = x.replace(/\x20{2,}/g, " ").split(" ")[urlInNum - 1].replace(/^#/, "");
+
+							scname = arg.substring(arg.lastIndexOf('/') + 1, arg.lastIndexOf('.'));
 							if (isLooniOS) {
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
 
@@ -424,9 +458,9 @@ console.log("插件图标：" + pluginIcon);
 							} else if (isSurgeiOS || isLanceX) {
 								z[y - 1]?.match(/^#/) && MapLocal.push(z[y - 1]);
 
-								let mockPtn = x.replace(/\x20{2,}/g, " ").split(" url echo-response")[0].replace(/^#/, "");
+								mockPtn = x.replace(/\x20{2,}/g, " ").split(" url echo-response")[0].replace(/^#/, "");
 
-								let dataCon = x.replace(/\x20{2,}/g, " ").split(" echo-response ")[2];
+								dataCon = x.replace(/\x20{2,}/g, " ").split(" echo-response ")[2];
 
 								MapLocal.push(`${noteK}${mockPtn} data="${dataCon}"`);
 							} else if (isShadowrocket || isEgern) {
@@ -444,10 +478,7 @@ console.log("插件图标：" + pluginIcon);
 									`${noteK2}${scname}_${y}:${noteKn4}url: https://raw.githubusercontent.com/xream/scripts/main/surge/modules/echo-response/index.js${noteKn4}interval: 86400`);
 							};
 
-						} else {
-							let lineNum = original.indexOf(x) + 1;
-							others.push(lineNum + "行" + x)
-						};
+						} else { others.push(x) };
 
 						break;
 
@@ -484,15 +515,15 @@ console.log("插件图标：" + pluginIcon);
 						if (type.match(/\x20(request|response)-body/)) {
 
 							//(response|request)-body
-							let reBdType = x.match(' response-body ') ? 'response' : 'request';
+							reBdType = x.match(' response-body ') ? 'response' : 'request';
 
-							let reBdPtn = x.replace(/\x20{2,}/g, " ").split(" url re")[0].replace(/^#/, "");
+							reBdPtn = x.replace(/\x20{2,}/g, " ").split(" url re")[0].replace(/^#/, "");
 							if (isSurgeiOS || isLanceX) {
 								reBdPtn = reBdPtn.replace(/(.+,.+)/, '"$1"');
 							};
-							let reBdArg1 = x.split(" " + reBdType + "-body ")[1];
+							reBdArg1 = x.split(" " + reBdType + "-body ")[1];
 
-							let reBdArg2 = x.split(" " + reBdType + "-body ")[2];
+							reBdArg2 = x.split(" " + reBdType + "-body ")[2];
 							if (isLooniOS) {
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
 
@@ -512,7 +543,6 @@ console.log("插件图标：" + pluginIcon);
 							};
 						} else if (type.match(/\x20(https?|ftp|file)/)) {
 							//定时任务                        
-							let cronExp
 
 							if (isSurgeiOS || isLanceX || isShadowrocket || isLooniOS || isEgern) {
 								cronExp = x.replace(/\x20{2,}/g, " ").split(/\x20(https?|ftp|file)/)[0].replace(/^#/, '');
@@ -529,9 +559,9 @@ console.log("插件图标：" + pluginIcon);
 								};
 							};
 
-							let cronJs = x.split("://")[0].replace(/.+\x20([^\s]+)$/, "$1") + "://" + x.split("://")[1].split(",")[0];
+							cronJs = x.split("://")[0].replace(/.+\x20([^\s]+)$/, "$1") + "://" + x.split("://")[1].split(",")[0];
 
-							let croName = cronJs.substring(cronJs.lastIndexOf('/') + 1, cronJs.lastIndexOf('.'));
+							croName = cronJs.substring(cronJs.lastIndexOf('/') + 1, cronJs.lastIndexOf('.'));
 
 							if (isSurgeiOS || isLanceX || isShadowrocket || isEgern) {
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
@@ -675,9 +705,9 @@ ${providers}`
 		};
 
 		if (isSurgeiOS || isLanceX || isStashiOS) {
-			others != "" && $notification.post("不支持的类型已跳过", "第" + others, "点击查看原文，长按可展开查看跳过行", { url: req });
+			others != "" && $notification.post("不支持的类型已跳过", others, "点击查看原文，长按可展开查看剩余不支持内容", { url: req });
 		} else if (isLooniOS || isShadowrocket) {
-			others != "" && $notification.post("不支持的类型已跳过", "第" + others, "点击查看原文，长按可展开查看跳过行", req);
+			others != "" && $notification.post("不支持的类型已跳过", "第" + others, "点击查看原文，长按可展开查看剩余不支持内容", req);
 		};
 
 		$done({ response: { status: 200, body: body, headers: { 'Content-Type': 'text/plain; charset=utf-8' } } });

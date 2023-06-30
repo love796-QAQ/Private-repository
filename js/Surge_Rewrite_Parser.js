@@ -33,7 +33,7 @@ if (isLooniOS || isSurgeiOS || isShadowrocket) {
 	} else { urlArg = "" };
 };
 var rewriteName = req.substring(req.lastIndexOf('/') + 1).split('.')[0];
-var original = [];//用于获取原文行号
+
 //获取参数
 var nName = urlArg.search(/\?n=|&n=/) != -1 ? (urlArg.split(/\?n=|&n=/)[1].split("&")[0].split("+")) : null;
 var Pin0 = urlArg.search(/\?y=|&y=/) != -1 ? (urlArg.split(/\?y=|&y=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
@@ -43,6 +43,10 @@ var hnDel = urlArg.search(/\?hndel=|&hndel=/) != -1 ? (urlArg.split(/\?hndel=|&h
 var delNoteSc = urlArg.search(/\?del=|&del=/) != -1 ? true : false;
 var nCron = urlArg.search(/\?cron=|&cron=/) != -1 ? (urlArg.split(/\?cron=|&cron=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
 var nCronExp = urlArg.search(/\?cronexp=|&cronexp=/) != -1 ? (urlArg.split(/\?cronexp=|&cronexp=/)[1].split("&")[0].replace(/\./g, " ").split("+")).map(decodeURIComponent) : null;
+var nArgTarget = urlArg.search(/\?arg=|&arg=/) != -1 ? (urlArg.split(/\?arg=|&arg=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
+var nArg = urlArg.search(/\?argv=|&argv=/) != -1 ? (urlArg.split(/\?argv=|&argv=/)[1].split("&")[0].split("+")).map(decodeURIComponent) : null;
+var nTilesTarget = urlArg.search(/\?tiles=|&tiles=/) != -1 ? (urlArg.split(/\?tiles=|&tiles=/)[1].split("&")[0].split("+")) : null;
+var nTilesColor = urlArg.search(/\?tcolor=|&tcolor=/) != -1 ? (urlArg.split(/\?tcolor=|&tcolor=/)[1].split("&")[0].split("+")) : null;
 var icon = "";
 //修改名字和简介
 if (nName === null) {
@@ -109,8 +113,6 @@ console.log("插件图标：" + pluginIcon);
 		}//识别客户端通知
 	} else {//以下开始重写及脚本转换
 
-		original = body.replace(/^ *(#|;|\/\/)/g, '#').replace(/(^[^#].+)\x20+\/\/.+/g, "$1").split(/(\r\n)/);
-
 		if (body.match(/\/\*+\n[\s\S]*\n\*+\/\n/)) {
 			body = body.replace(/[\s\S]*(\/\*+\n[\s\S]*\n\*+\/\n)[\s\S]*/, "$1").match(/[^\r\n]+/g);
 		} else {
@@ -126,11 +128,32 @@ console.log("插件图标：" + pluginIcon);
 		let URLRewrite = [];
 		let HeaderRewrite = [];
 		let MapLocal = [];
+		let tiles = [];
 		let cron = [];
 		let providers = [];
 		let MITM = "";
-		let others = [];          //不支持的内容
+		let others = [];       //不支持的内容
 
+		let scname = "";       //脚本名
+		let js = "";           //脚本链接
+		let arg = "";          //argument
+		let sctype = "";       //脚本类型
+		let ptn = "";          //正则
+		let rebody = "";       //是否需要body
+		let size = "";         //允许最大body大小
+		let proto = "";        //是否开启binary-body-mode
+		let hdtype = "";       //HeaderRewrite 类型
+		let cronExp = "";      //cron表达式
+		let croName = "";      //cron任务名
+		let cronJs = "";       //cron脚本链接
+		let rejectType = "";   //重写reject类型
+		let rejectPtn = "";    //重写reject正则
+		let file = "";         //Mock的文件链接
+		let fileName = "";     //文件名
+		let mock2Reject = "";  //Mock转reject类型
+		let tilesIcon = "";    //Stash磁贴图标
+		let tilesColor = "";   //Stash磁贴颜色
+		let Urx2Reject = "";   //URL-REGEX转reject
 
 
 		body.forEach((x, y, z) => {
@@ -233,10 +256,87 @@ console.log("插件图标：" + pluginIcon);
 					//Panel脚本            
 					case "type=generic,":
 
+						scname = x.split(/ *=/)[0].replace(/^#/, '');
+
+						js = x.replace(/\x20/g, "").split("script-path=")[1].split(",")[0];
+
+						if (x.match(/icon=/)) {
+							tilesIcon = x.split("icon=")[1].split("&")[0];
+						};
+
+						if (x.match(/icon-color=/)) {
+							tilesColor = x.split("icon-color=")[1].split("&")[0];
+						};
+
+						//获取argument
+						if (isSurgeiOS) {
+							if (x.match(/,\x20*argument\x20*=.+/)) {
+								if (x.match(/,\x20*argument\x20*=\x20*"+.*?,.*?"+/)
+								) {
+									arg = ', argument=' + x.match(/,\x20*argument\x20*=\x20*("+.*?,.*?"+)/)[1];
+								} else {
+									arg = ", argument=" + x.replace(/,\x20*argument\x20*=/gi, ",argument=").split(",argument=")[1].split(",")[0];
+								}
+							} else { };
+
+						} else if (isStashiOS) {
+							if (x.match(/,\x20*argument\x20*=.+/)) {
+								if (x.match(/,\x20*argument\x20*=\x20*"+.*?,.*?"+/)
+								) {
+									arg = x.match(/,\x20*argument\x20*=\x20*("+.*?,.*?"+)/)[1];
+
+									if (arg.match(/^".+"$/)) {
+										arg = `${noteKn6}argument: |-${noteKn8}` + arg.replace(/^"(.+)"$/, '$1');
+									};
+								} else {
+									arg = `${noteKn6}argument: |-${noteKn8}` + x.replace(/,\x20*argument\x20*=/gi, ",argument=").split(",argument=")[1].split(",")[0];
+								}
+
+							} else { };
+
+						};//获取argument结束
+
 						if (isSurgeiOS) {
 
+							if (nArgTarget != null) {
+								for (let i = 0; i < nArgTarget.length; i++) {
+									const elem = nArgTarget[i];
+									if (x.indexOf(elem) != -1) {
+										arg = ', argument="' + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+") + '"';
+									};
+								};
+							};
+
 							z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
-							script.push(x);
+
+							script.push(
+								`${noteK}${scname} = type=generic, timeout=5, script-path=${js}${arg}`)
+						} else if (isStashiOS) {
+
+							if (nArgTarget != null) {
+								for (let i = 0; i < nArgTarget.length; i++) {
+									const elem = nArgTarget[i];
+									if (x.indexOf(elem) != -1) {
+										arg = `${noteKn4}argument: |-${noteKn6}` + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+");
+									};
+								};
+							};
+
+							if (nTilesTarget != null) {
+								for (let i = 0; i < nTilesTarget.length; i++) {
+									const elem = nTilesTarget[i];
+									if (x.indexOf(elem) != -1) {
+										tilesColor = nTilesColor[i].replace(/@/g, "#");
+									};
+								};
+							};
+
+							z[y - 1]?.match(/^#/) && tiles.push("    " + z[y - 1]);
+
+							tiles.push(
+								`${noteK2}- name: "${scname}_${y}"${noteKn4}interval: 3600${noteKn4}title: "${scname}"${noteKn4}icon: "${tilesIcon}"${noteKn4}backgroundColor: "${tilesColor}"${noteKn4}timeout: 30${arg}`);
+							providers.push(
+								`${noteK2}"${scname}_${y}":${noteKn4}url: ${js}${noteKn4}interval: 86400`);
 						};
 
 						break;
@@ -255,17 +355,21 @@ console.log("插件图标：" + pluginIcon);
 						//Surge5脚本			
 						if (x.match(/=\x20*http-re/)) {
 
-							let sctype = x.match('http-response') ? 'response' : 'request';
+							sctype = x.match('http-response') ? 'response' : 'request';
 
-							let scname = x.replace(/\x20/g, '').split("=")[0].replace(/^#/, '');
+							scname = x.replace(/\x20/g, '').split("=")[0].replace(/^#/, '');
 
-							let ptn = x.replace(/(\{[0-9]+)\,([0-9]*\})/g, '$1t&zd;$2').replace(/\x20/g, "").split("pattern=")[1].split(",")[0].replace(/"/gi, '');
+							ptn = x.replace(/(\{[0-9]+)\,([0-9]*\})/g, '$1t&zd;$2').replace(/\x20/g, "").split("pattern=")[1].split(",")[0].replace(/"/gi, '');
 
-							let js = x.replace(/\x20/g, "").split("script-path=")[1].split(",")[0];
+							js = x.replace(/\x20/g, "").split("script-path=")[1].split(",")[0];
 
-							let arg = [];
+							proto = x.replace(/\x20/gi, '').match('binary-body-mode=(true|1)') ? ', binary-body-mode=true' : '';
 
-							if (isLooniOS) {
+							rebody = x.replace(/\x20/gi, '').match('requires-body=(true|1)') ? ', requires-body=true' : '';
+
+							size = x.replace(/\x20/g, '').match('requires-body=(true|1)') ? ', max-size=3145728' : '';
+
+							if (isLooniOS || isSurgeiOS || isShadowrocket) {
 								if (x.match(/,\x20*argument\x20*=.+/)) {
 									if (x.match(/,\x20*argument\x20*=\x20*"+.*?,.*?"+/)
 									) {
@@ -292,14 +396,16 @@ console.log("插件图标：" + pluginIcon);
 
 							};
 
-							let rebody
-							let size
-							let proto
-
 							if (isLooniOS) {
-								rebody = x.replace(/\x20/g, '').match('requires-body=(true|1)') ? ', requires-body=true' : '';
 
-								proto = x.replace(/\x20/g, '').match('binary-body-mode=(true|1)') ? ', binary-body-mode=true' : '';
+								if (nArgTarget != null) {
+									for (let i = 0; i < nArgTarget.length; i++) {
+										const elem = nArgTarget[i];
+										if (x.indexOf(elem) != -1) {
+											arg = ', argument="' + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+") + '"';
+										};
+									};
+								};
 
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
 
@@ -314,16 +420,37 @@ console.log("插件图标：" + pluginIcon);
 
 								proto = x.replace(/\x20/g, '').match('binary-body-mode=(true|1)') ? 'binary-mode: true' : '';
 
+								if (nArgTarget != null) {
+									for (let i = 0; i < nArgTarget.length; i++) {
+										const elem = nArgTarget[i];
+										if (x.indexOf(elem) != -1) {
+											arg = `${noteKn6}argument: |-${noteKn8}` + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+");
+										};
+									};
+								};
+
 								z[y - 1]?.match(/^#/) && script.push("    " + z[y - 1]);
 
 								script.push(
-									`${noteKn4}- match: ${ptn}${noteKn6}name: ${scname}_${y}${noteKn6}type: ${sctype}${noteKn6}timeout: 30${noteKn6}${rebody}${noteKn6}${size}${arg}${noteKn6}${proto}`);
+									`${noteKn4}- match: ${ptn}${noteKn6}name: "${scname}_${y}"${noteKn6}type: ${sctype}${noteKn6}timeout: 30${noteKn6}${rebody}${noteKn6}${size}${arg}${noteKn6}${proto}`);
 								providers.push(
-									`${noteK2}${scname}_${y}:${noteKn4}url: ${js}${noteKn4}interval: 86400`);
+									`${noteK2}"${scname}_${y}":${noteKn4}url: ${js}${noteKn4}interval: 86400`);
 							} else {
 
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
-								script.push(x)
+
+								if (nArgTarget != null) {
+									for (let i = 0; i < nArgTarget.length; i++) {
+										const elem = nArgTarget[i];
+										if (x.indexOf(elem) != -1) {
+											arg = ', argument="' + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+") + '"';
+										};
+									};
+								};
+
+								script.push(
+									`${noteK}${scname}_${y} = type=http-${sctype}, pattern=${ptn}, script-path=${js}${rebody}${size}${proto}, timeout=30${arg}`);
+
 
 							};
 
@@ -339,7 +466,7 @@ console.log("插件图标：" + pluginIcon);
 
 								z[y - 1]?.match(/^#/) && HeaderRewrite.push("    " + z[y - 1]);
 
-								let hdtype = x.match(/http-response/) ? 'response ' : 'request';
+								hdtype = x.match(/http-response/) ? 'response ' : 'request';
 
 								HeaderRewrite.push(`${noteK4}- ` + x.replace(/#?http-(response|request)\x20+/, "").replace("\x20header-", `\x20${hdtype}-`))
 							} else if (isSurgeiOS) {
@@ -350,17 +477,21 @@ console.log("插件图标：" + pluginIcon);
 
 						} else if (x.match(/http-(response|request)\x20/)) {
 							//Surge4脚本
-							let ptn = x.replace(/\x20{2,}/g, " ").split(" ")[1].replace(/"/gi, '');
+							ptn = x.replace(/\x20{2,}/g, " ").split(" ")[1].replace(/"/gi, '');
 
-							let js = x.replace(/\x20/gi, "").split("script-path=")[1].split(",")[0];
+							js = x.replace(/\x20/gi, "").split("script-path=")[1].split(",")[0];
 
-							let sctype = x.match('http-response') ? 'response' : 'request';
+							sctype = x.match('http-response') ? 'response' : 'request';
 
-							let scname = js.substring(js.lastIndexOf('/') + 1, js.lastIndexOf('.'));
+							scname = js.substring(js.lastIndexOf('/') + 1, js.lastIndexOf('.'));
 
-							let arg = [];
+							proto = x.replace(/\x20/gi, '').match('binary-body-mode=(true|1)') ? ', binary-body-mode=true' : '';
 
-							if (isLooniOS) {
+							rebody = x.replace(/\x20/gi, '').match('requires-body=(true|1)') ? ', requires-body=true' : '';
+
+							size = x.replace(/\x20/g, '').match('requires-body=(true|1)') ? ', max-size=3145728' : '';
+
+							if (isLooniOS || isSurgeiOS || isShadowrocket) {
 								if (x.match(/,\x20*argument\x20*=.+/)) {
 									if (x.match(/,\x20*argument\x20*=\x20*"+.*?,.*?"+/)
 									) {
@@ -391,37 +522,59 @@ console.log("插件图标：" + pluginIcon);
 
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
 
-								let proto = x.replace(/\x20/gi, '').match('binary-body-mode=(true|1)') ? ', binary-body-mode=true' : '';
-
-								let rebody = x.replace(/\x20/gi, '').match('requires-body=(true|1)') ? ', requires-body=true' : '';
+								if (nArgTarget != null) {
+									for (let i = 0; i < nArgTarget.length; i++) {
+										const elem = nArgTarget[i];
+										if (x.indexOf(elem) != -1) {
+											arg = ', argument="' + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+") + '"';
+										};
+									};
+								};
 
 								script.push(
 									`${noteK}http-${sctype} ${ptn} script-path=${js}${rebody}${proto}, tag=${scname}_${y}${arg}`);
 
 							} else if (isStashiOS) {
 
-								let proto = x.replace(/\x20/g, '').match('binary-body-mode=(true|1)') ? 'binary-mode: true' : '';
+								proto = x.replace(/\x20/g, '').match('binary-body-mode=(true|1)') ? 'binary-mode: true' : '';
 
-								let rebody = x.replace(/\x20/g, '').match('requires-body=(true|1)') ? 'require-body: true' : '';
+								rebody = x.replace(/\x20/g, '').match('requires-body=(true|1)') ? 'require-body: true' : '';
 
-								let size = x.replace(/\x20/g, '').match('requires-body=(true|1)') ? 'max-size: 3145728' : '';
+								size = x.replace(/\x20/g, '').match('requires-body=(true|1)') ? 'max-size: 3145728' : '';
+
+								if (nArgTarget != null) {
+									for (let i = 0; i < nArgTarget.length; i++) {
+										const elem = nArgTarget[i];
+										if (x.indexOf(elem) != -1) {
+											arg = `${noteKn6}argument: |-${noteKn8}` + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+");
+										};
+									};
+								};
 
 								script.push(
-									`${noteKn4}- match: ${ptn}${noteKn6}name: ${scname}_${y}${noteKn6}type: ${sctype}${noteKn6}timeout: 30${noteKn6}${rebody}${noteKn6}${size}${arg}${noteKn6}${proto}`
+									`${noteKn4}- match: ${ptn}${noteKn6}name: "${scname}_${y}"${noteKn6}type: ${sctype}${noteKn6}timeout: 30${noteKn6}${rebody}${noteKn6}${size}${arg}${noteKn6}${proto}`
 								);
 								providers.push(
-									`${noteK2}${scname}_${y}:${noteKn4}url: ${js}${noteKn4}interval: 86400`
+									`${noteK2}"${scname}_${y}":${noteKn4}url: ${js}${noteKn4}interval: 86400`
 								);
 							} else {
 
 								z[y - 1]?.match(/^#/) && script.push(z[y - 1]);
-								script.push(x)
+
+								if (nArgTarget != null) {
+									for (let i = 0; i < nArgTarget.length; i++) {
+										const elem = nArgTarget[i];
+										if (x.indexOf(elem) != -1) {
+											arg = ', argument="' + nArg[i].replace(/t;amp;/g, "&").replace(/t;add;/g, "+") + '"';
+										};
+									};
+								};
+
+								script.push(
+									`${noteK}${scname}_${y} = type=http-${sctype}, pattern=${ptn}, script-path=${js}${rebody}${size}${proto}, timeout=30${arg}`);
 							};
 
-						} else {
-							let lineNum = (original.indexOf(x) + 2) / 2;
-							others.push(lineNum + "行" + x)
-						};//整个http-re结束
+						} else { others.push(x) };//整个http-re结束
 
 						break;
 
@@ -431,14 +584,13 @@ console.log("插件图标：" + pluginIcon);
 						if (isLooniOS) {
 							z[y - 1]?.match(/^#/) && URLRewrite.push(z[y - 1]);
 
-
 							URLRewrite.push(`${noteK}` + x.replace(/#?http-(response|request)\x20/, ""))
 
 						} else if (isStashiOS) {
 
 							z[y - 1]?.match(/^#/) && HeaderRewrite.push("    " + z[y - 1]);
 
-							let hdtype = x.match(/http-response/) ? 'response ' : 'request';
+							hdtype = x.match(/http-response/) ? 'response ' : 'request';
 
 							HeaderRewrite.push(`${noteK4}- ` + x.replace(/#?http-(response|request)\x20+/, "").replace("\x20header-", `\x20${hdtype}-`))
 						} else if (isSurgeiOS) {
@@ -452,7 +604,6 @@ console.log("插件图标：" + pluginIcon);
 					//定时任务
 					case "cronexp=":
 
-						let cronExp
 						if (x.match(/cronexp=(.+?),[^,]+?=/)) {
 							cronExp = x.match(/cronexp=(.+?),[^,]+?=/)[1].replace(/"/g, '');
 						} else {
@@ -473,9 +624,9 @@ console.log("插件图标：" + pluginIcon);
 							};
 						};
 
-						let croName = x.split("=")[0].replace(/\x20/g, "").replace(/^#/, '')
+						croName = x.split("=")[0].replace(/\x20/g, "").replace(/^#/, '')
 
-						let cronJs = x.replace(/\x20/gi, "").split("script-path=")[1].split(",")[0];
+						cronJs = x.replace(/\x20/gi, "").split("script-path=")[1].split(",")[0];
 
 						if (isLooniOS) {
 
@@ -484,10 +635,10 @@ console.log("插件图标：" + pluginIcon);
 						} else if (isStashiOS) {
 
 							cron.push(
-								`${noteKn4}- name: ${croName}${noteKn6}cron: "${cronExp}"${noteKn6}timeout: 60`
+								`${noteKn4}- name: "${croName}"${noteKn6}cron: "${cronExp}"${noteKn6}timeout: 60`
 							);
 							providers.push(
-								`${noteK2}${croName}:${noteKn4}url: ${cronJs}${noteKn4}interval: 86400`
+								`${noteK2}"${croName}":${noteKn4}url: ${cronJs}${noteKn4}interval: 86400`
 							);
 						} else {
 
@@ -502,9 +653,9 @@ console.log("插件图标：" + pluginIcon);
 
 					case " reject":
 
-						let rejectType = x.split(" ")[x.split(" ").length - 1].toLowerCase().replace(/tinygif/, "img");
+						rejectType = x.split(" ")[x.split(" ").length - 1].toLowerCase().replace(/tinygif/, "img");
 
-						let rejectPtn = x.split(" ")[0].replace(/^#/, "");
+						rejectPtn = x.split(" ")[0].replace(/^#/, "");
 
 						if (x.search(/ reject(-200|-img|-dict|-array|-tinygif)?$/i) == -1) {
 
@@ -564,14 +715,13 @@ console.log("插件图标：" + pluginIcon);
 
 					case " data=":
 
-						let ptn = x.replace(/\x20{2,}/g, " ").split(" data=")[0].replace(/^#|"/g, "");
-						let file = x.split(' data="')[1].split('"')[0];
-						let fileName = file.substring(file.lastIndexOf('/') + 1);
-						let scname = fileName.split(".")[0];
+						ptn = x.replace(/\x20{2,}/g, " ").split(" data=")[0].replace(/^#|"/g, "");
+						file = x.split(' data="')[1].split('"')[0];
+						fileName = file.substring(file.lastIndexOf('/') + 1);
+						scname = fileName.split(".")[0];
 
 						if (fileName.match(/(img|dict|array|200|blank|tinygif)\.[^.]+$/i)) {
 
-							let mock2Reject
 
 							if (fileName.match(/dict\.[^.]+$/i)) {
 								mock2Reject = "-dict";
@@ -618,10 +768,10 @@ console.log("插件图标：" + pluginIcon);
 								z[y - 1]?.match(/^#/) && script.push("    " + z[y - 1]);
 
 								script.push(
-									`${noteK4}- match: ${ptn}${noteKn6}name: ${scname}_${y}${noteKn6}type: request${noteKn6}timeout: 30${noteKn6}argument: |-${noteKn8}type=text/json&url=${file}`)
+									`${noteK4}- match: ${ptn}${noteKn6}name: "${scname}_${y}"${noteKn6}type: request${noteKn6}timeout: 30${noteKn6}argument: |-${noteKn8}type=text/json&url=${file}`)
 
 								providers.push(
-									`${noteK2}${scname}_${y}:${noteKn4}url: https://raw.githubusercontent.com/xream/scripts/main/surge/modules/echo-response/index.js${noteKn4}interval: 86400`);
+									`${noteK2}"${scname}_${y}":${noteKn4}url: https://raw.githubusercontent.com/xream/scripts/main/surge/modules/echo-response/index.js${noteKn4}interval: 86400`);
 							} else {
 
 								z[y - 1]?.match(/^#/) && Maplocal.push(z[y - 1]);
@@ -637,7 +787,9 @@ console.log("插件图标：" + pluginIcon);
 							MITM = x.replace(/%.*%/g, " ").replace(/\x20/g, "").replace(/,{2,}/g, ",").replace(/,*\x20*$/, "").replace(/hostname=(.*)/, `[MITM]\n\nhostname = $1`).replace(/=\x20,+/, "= ");
 						} else if (isStashiOS) {
 							MITM = x.replace(/%.*%/g, "").replace(/\x20/g, "").replace(/,{2,}/g, ",").replace(/,*\x20*$/, "").replace(/hostname=(.*)/, `t&2;mitm:\nt&hn;"$1"`).replace(/",+/, '"');
-						} else { MITM = "[MITM]\n\n" + x; };
+						} else {
+							MITM = x.replace(/%.*%/g, "").replace(/\x20/g, "").replace(/,{2,}/g, ",").replace(/,*\x20*$/, "").replace(/hostname=(.*)/, `[MITM]\n\nhostname = %APPEND% $1`).replace(/%\x20,+/, "% ");
+						};
 						break;
 
 					//general          
@@ -700,8 +852,6 @@ console.log("插件图标：" + pluginIcon);
 								z[y - 1]?.match(/^#/) && URLRewrite.push("    " + z[y - 1]);
 								x = x.replace(/\x20/, "");
 
-								let Urx2Reject
-
 								if (x.match(/DICT$/i)) {
 									Urx2Reject = '-dict';
 								} else if (x.match(/ARRAY$/i)) {
@@ -719,10 +869,7 @@ console.log("插件图标：" + pluginIcon);
 										`${noteKn4}- $1 - reject${Urx2Reject}`)
 								);
 								//转reject结束          
-							} else {
-								let lineNum = (original.indexOf(x) + 2) / 2;
-								others.push(lineNum + "行" + x)
-							};//Stash URL-REGEX处理完毕         
+							} else { others.push(x) };//Stash URL-REGEX处理完毕                  
 						} else if (isSurgeiOS || isShadowrocket || isLooniOS) {
 							x = x.replace(/" "/g, "");
 							z[y - 1]?.match(/^#/) && rules.push(z[y - 1]);
@@ -758,8 +905,6 @@ console.log("插件图标：" + pluginIcon);
 			} else {
 				pluginDesc = npluginDesc + "\n" + pluginIcon;
 			};
-
-			pluginDesc = npluginDesc + "\n" + pluginIcon;
 
 			if (iconReplace == "启用" && pluginDesc.search(/#!icon=/) == -1) {
 				pluginDesc = pluginDesc + "\n" + pluginIcon
@@ -810,6 +955,8 @@ ${MITM}`
 
 			rules = (rules[0] || '') && `rules:\n${rules.join("\n")}`;
 
+			tiles = (tiles[0] || '') && `tiles:\n${tiles.join("\n\n")}`;
+
 			script = (script[0] || '') && `  script:\n${script.join("\n\n")}`;
 
 			providers = (providers[0] || '') && `script-providers:\n${providers.join("\n")}`;
@@ -853,6 +1000,8 @@ ${MITM}`
 ${rules}
 
 ${httpFrame}
+
+${tiles}
 
 ${cron}
 
@@ -918,10 +1067,10 @@ ${providers}`
 
 
 		if (isStashiOS || isSurgeiOS) {
-			others != "" && $notification.post("不支持的类型已跳过", "第" + others, "点击查看原文，长按可展开查看跳过行", { url: req });
+			others != "" && $notification.post("不支持的类型已跳过", others, "点击查看原文，长按可展开查看剩余不支持内容", { url: req });
 		} else {
 			if (isLooniOS || isShadowrocket) {
-				others != "" && $notification.post("不支持的类型已跳过", "第" + others, "点击查看原文，长按可展开查看跳过行", req);
+				others != "" && $notification.post("不支持的类型已跳过", others, "点击查看原文，长按可展开查看剩余不支持内容", req);
 			}
 		};
 
