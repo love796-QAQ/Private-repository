@@ -1,7 +1,7 @@
 #!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/mini/GLaDOS.png
 [Rewrite]
 
-http-response ^https:\/\/glados\.rocks\/api\/user\/checkin script-path = https://gist.githubusercontent.com/ddgksf2013/32b3d37d78433a34370cbfb69780160d/raw/glados.js
+http-response ^https:\/\/glados\.rocks\/api\/user\/checkin script-path = https://gist.githubusercontent.com/ddgksf2013/32b3d37d78433a34370cbfb69780160d/raw/glados.js requires-body =true
 
 [Script]
 
