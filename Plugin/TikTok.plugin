@@ -11,5 +11,7 @@
 (?<=&mcc_mnc=)4 307 2
 (?<=_region=)CN(?=&) 307 KR
 
+http-response https?:\/\/.*\.tiktokv\.com\/aweme\/v\d\/(feed|mix\/aweme|aweme\/post|(multi\/)?aweme\/detail|follow\/feed|nearby\/feed|search\/item|general\/search\/single|hot\/search\/video\/list|aweme\/favorite) script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/main/Resource/Script/TikTok/TikTok_remove_watermark.js, requires-body = true, tag = TikTok去水印
+
 [MITM]
 hostname = -*amemv.com,-*snssdk.com,*.tik-tokapi.com,*.byteoversea.com,*.tiktokv.com
