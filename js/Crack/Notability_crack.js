@@ -14,7 +14,7 @@ if (obj.data) {
         refundedDate: null,
         refundedReason: null,
         isInBillingRetryPeriod: false,
-        expirationDate: "2090-12-31T23:59:59.000Z",
+        expirationDate: "2050-05-20T23:59:59.000Z",
         gracePeriodExpiresAt: null,
         overDeviceLimit: false,
         expirationIntent: null,
