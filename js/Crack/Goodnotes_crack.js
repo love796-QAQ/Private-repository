@@ -1,6 +1,3 @@
-/*
-脚本引用https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/break/goodnotes.js
-*/
 // 2023-08-10 15:45
 
 const body = {};
