@@ -1,3 +1,4 @@
+/*
 # Private-Loon-Library
 
 ## 插件
@@ -30,3 +31,4 @@
 | 应用 | 链接 |
 | :-----| :-----|
 | [Spotify](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/app2smile/rules/master/module/spotify.modulesg) | https://raw.githubusercontent.com/app2smile/rules/master/module/spotify.module |
+*/
