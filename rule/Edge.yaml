@@ -5,4 +5,5 @@
 # DOMAIN-KEYWORD: 1
 # TOTAL: 1
 payload:
-  - DOMAIN-KEYWORD,msn
+  - DOMAIN,ntp.msn.com
+  - DOMAIN,api.msn.com
