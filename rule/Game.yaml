@@ -1,0 +1,21 @@
+# NAME: Edge
+# AUTHOR: love796-QAQ
+# REPO: https://github.com/love796-QAQ/Private-Loon-Library
+# UPDATED: 2023-05-30 13:28:09
+# DOMAIN-KEYWORD: 1
+# TOTAL: 1
+payload:
+  - PROCESS-NAME,NatTypeTester-x64.exe
+  #
+  - PROCESS-NAME,r5apex.exe
+  - PROCESS-NAME,r5apex_dx12.exe
+  #
+  - PROCESS-NAME,Launcher.exe
+  - PROCESS-NAME,SocialClubHelper.ex
+  #
+  - PROCESS-NAME,GTA5.exe
+  #
+  - PROCESS-NAME,RDR2.exe
+  #
+  - PROCESS-NAME,svchost.exe
+  - PROCESS-NAME,ForzaHorizon4.exe
