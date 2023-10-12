@@ -5,4 +5,5 @@
 # DOMAIN-KEYWORD: 1
 # TOTAL: 1
 payload:
+  - DOMAIN,browser.events.data.msn.com,DIRECT
   - DOMAIN-KEYWORD,msn
