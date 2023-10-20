@@ -21,7 +21,7 @@
       "domain": [
         "geosite:openai",
         "geosite:cn"
-      ]
+      ],
       "ip": [
         "geoip:cn"
       ]
