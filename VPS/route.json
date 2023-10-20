@@ -28,11 +28,6 @@
     },
     {
       "type": "field",
-      "outboundTag": "IPv6_out",
-      "domain": []
-    },
-    {
-      "type": "field",
       "outboundTag": "IPv4_out",
       "network": "udp,tcp"
     }
