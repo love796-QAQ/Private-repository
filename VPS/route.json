@@ -20,7 +20,9 @@
       "outboundTag": "socks5-warp",
       "domain": [
         "geosite:openai",
-        "geosite:cn",
+        "geosite:cn"
+      ]
+      "ip": [
         "geoip:cn"
       ]
     },
