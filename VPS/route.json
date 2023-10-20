@@ -19,17 +19,9 @@
       "type": "field",
       "outboundTag": "socks5-warp",
       "domain": [
-	"domain:openai.com",
-	"domain:cdn.auth0.com",
-	"domain:azureedge.net",
-	"domain:sentry.io",
-	"domain:azurefd.net",
-	"domain:intercomcdn.com",
-	"domain:intercom.io",
-	"domain:google-analytics.com",
-	"domain:identrust.com",
-	"domain:challenges.cloudflare.com",
-	"domain:ai.com"
+	"geosite:openai",
+	"geosite:cn",
+	"geoip:cn"
       ]
     },
     {
