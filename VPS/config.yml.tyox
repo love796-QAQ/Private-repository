@@ -17,7 +17,7 @@ Nodes:
     ApiConfig:
       ApiHost: "https://www.vanillacafe.cyou"
       ApiKey: "wangshuo20020523"
-      NodeID: 1
+      NodeID: 2
       NodeType: Trojan # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30 # Timeout for the api request
       EnableVless: false # Enable Vless for V2ray Type
@@ -145,7 +145,7 @@ Nodes:
     ApiConfig:
       ApiHost: "https://dev.vanillacafe.cyou"
       ApiKey: "wangshuo20020523"
-      NodeID: 1
+      NodeID: 2
       NodeType: V2ray # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30 # Timeout for the api request
       EnableVless: true # Enable Vless for V2ray Type
