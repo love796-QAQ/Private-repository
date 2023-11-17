@@ -19,7 +19,9 @@
       "type": "field",
       "outboundTag": "socks5-warp",
       "domain": [
-        "geosite:cn"
+        "geosite:cn",
+        "geosite:netflix",
+        "geosite:openai"
       ]
     },
     {
@@ -33,8 +35,7 @@
       "type": "field",
       "outboundTag": "IPv6_out",
       "domain": [
-        "geosite:netflix",
-        "geosite:openai"
+        "geosite:xx"
       ]
     },
     {
