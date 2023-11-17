@@ -35,7 +35,7 @@
       "type": "field",
       "outboundTag": "IPv6_out",
       "domain": [
-        "geosite:xx"
+        "geosite:4399"
       ]
     },
     {
