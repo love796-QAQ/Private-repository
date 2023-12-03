@@ -1,9 +1,9 @@
-# NAME: Edge
+# NAME: steam_download
 # AUTHOR: love796-QAQ
 # REPO: https://github.com/love796-QAQ/Private-repository
 # UPDATED: 2023-05-30 13:28:09
-# DOMAIN-KEYWORD: 1
-# TOTAL: 1
+# DOMAIN: 2
+# TOTAL: 2
 payload:
   - DOMAIN,xz.pphimalayanrt.com
   - DOMAIN,dl.steam.clngaa.com
