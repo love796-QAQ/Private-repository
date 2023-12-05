@@ -143,7 +143,7 @@ Nodes:
 
   - PanelType: "NewV2board" # Panel type: SSpanel, NewV2board, PMpanel, Proxypanel, V2RaySocks, GoV2Panel
     ApiConfig:
-      ApiHost: "https://dev.vanillacafe.cyou"
+      ApiHost: "https://www.vanillacafe.cyou"
       ApiKey: "wangshuo20020523"
       NodeID: 3
       NodeType: V2ray # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
