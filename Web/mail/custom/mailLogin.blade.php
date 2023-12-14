@@ -7,7 +7,7 @@
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <thead>
                         <tr>
-                            <td valign="middle" style="padding-left:30px;background-color:#415A94;color:#fff;padding:20px 40px;font-size: 21px;">{{$name}}</td>
+                            <td valign="middle" style="padding-left:30px;background-color:#319795;color:#fff;padding:20px 40px;font-size: 21px;">{{$name}}</td>
                         </tr>
                         </thead>
                         <tbody>
