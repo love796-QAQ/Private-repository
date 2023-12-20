@@ -1,0 +1,33 @@
+{
+  "Log": {
+    "Level": "error",
+    "Output": ""
+  },
+  "Cores": [
+    {
+      "Type": "xray",
+      "Log": {
+        "Level": "error"
+      },
+      "RouteConfigPath": "/etc/V2bX/route.json",
+      "OutboundConfigPath": "/etc/V2bX/custom_outbound.json"
+    }
+  ],
+  "Nodes": [
+    {
+      "Core": "xray",
+      "ApiHost": "https://www.vanillacafe.cyou",
+      "ApiKey": "wangshuo20020523",
+      "NodeID": 2,
+      "NodeType": "vless",
+      "Timeout": 30,
+      "ListenIP": "0.0.0.0",
+      "SendIP": "0.0.0.0",
+      "EnableProxyProtocol": false,
+      "EnableTFO": true,
+      "EnableDNS": false,
+      "DNSType": "AsIs",
+      "EnableUot": true
+    }
+  ]
+}
