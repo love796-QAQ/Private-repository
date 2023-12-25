@@ -11,7 +11,7 @@ payload:
   - PROCESS-NAME,r5apex_dx12.exe
   #
   - PROCESS-NAME,Launcher.exe
-  - PROCESS-NAME,SocialClubHelper.ex
+  - PROCESS-NAME,SocialClubHelper.exe
   #
   - PROCESS-NAME,GTA5.exe
   #
