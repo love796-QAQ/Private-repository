@@ -27,7 +27,7 @@
       "EnableTFO": true,
       "EnableDNS": false,
       "DNSType": "AsIs",
-      "EnableUot": true
+      "EnableUot": false
     }
   ]
 }
