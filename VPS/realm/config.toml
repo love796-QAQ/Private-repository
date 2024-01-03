@@ -1,0 +1,11 @@
+[log]
+level = "warn"
+output = "/var/log/realm.log"
+
+[network]
+no_tcp = false
+use_udp = true
+
+[[endpoints]]
+listen = "0.0.0.0:40200"
+remote = "tyo2.netserver.store:40523"
