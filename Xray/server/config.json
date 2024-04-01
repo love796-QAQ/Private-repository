@@ -1,0 +1,105 @@
+{
+    "log": {
+        "loglevel": "warning"
+    },
+    "dns": {
+        "servers": [
+            "localhost",
+            {
+                "address": "https+local://cc2t01.gaidns.com",
+                "port": 443,
+                "domains": [
+                    "geosite:netflix",
+                    "geosite:openai",
+                    "geosite:disney",
+                    "geosite:bahamut",
+                    "geosite:bilibili",
+                    "geosite:abema",
+                    "geosite:dmm",
+                    "geosite:hbo",
+                    "geosite:mytvsuper"
+                ],
+                "queryStrategy": "UseIPv4"
+            }
+        ]
+    },
+    "routing": {
+        "domainStrategy": "IPIfNonMatch",
+        "rules": [
+            {
+                "type": "field",
+                "domain": [
+                    "geosite:bilibili"
+                ],
+                "outboundTag": "direct"
+            },
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:cn"
+                ],
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
+                "domain": [
+                    "geosite:cn"
+                ],
+                "outboundTag": "block"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "port": 443,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "bf3af9bb-9e86-4738-9eaf-ecbcaa836389",
+                        "flow": "xtls-rprx-vision"
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "dest": "www.amazon.com:443",
+                    "serverNames": [
+                        "www.amazon.com"
+                    ],
+                    "privateKey": "KPV4r0KaHAn5XR19AmwOc66HLWToKRbglNH4GFBJCAI",
+                    "shortIds": [
+                        "f789ce10"
+                    ]
+                },
+		"sockopt": {
+		    "tcpFastOpen": true
+		}
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls",
+                    "quic"
+                ]
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "settings": {
+                "domainStrategy": "UseIP"
+            },
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "block"
+        }
+    ]
+}
